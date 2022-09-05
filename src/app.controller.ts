@@ -1,23 +1,24 @@
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth/auth.service';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from './auth/guards/local-auth.guard';
+import { JwtAuthGuard } from './security/guards/jwt-auth.guard';
+import { LocalAuthGuard } from './security/guards/local-auth.guard';
 import { AppService } from './app.service';
+import { SecurityService } from './security/security.service';
+import * as process from 'process';
 
 @Controller()
 export class AppController {
-  constructor(private readonly authService: AuthService, private appServ: AppService) {}
+  constructor(private readonly secServ: SecurityService, private appServ: AppService) {}
 
-  @Get()
-  async findAll() {
-    this.appServ.logger().info('123456789abcdefghijk');
-    return this.appServ.getSecret('TEST_TOKEN');
-  }
-  
+
+@Get()
+testenv(){
+    return process.env.GOOGLE_CLOUD_PROJECT + process.env.JWT_SECRET
+}
+
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
-    return this.authService.login(req.user);
+    return this.secServ.login(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
