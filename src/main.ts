@@ -6,11 +6,11 @@ import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 
 async function setEnvVariables(variables: string[]) {
     const client = new SecretManagerServiceClient();
-    variables.forEach(async variable => {
-        const secretpath = `projects/${process.env.GOOGLE_CLOUD_PROJECT}/secrets/${variable}/versions/1`;
+    for (const v of variables) {
+        const secretpath = `projects/${process.env.GOOGLE_CLOUD_PROJECT}/secrets/${v}/versions/1`;
         const [version] = await client.accessSecretVersion({ name: secretpath });
-        process.env[variable] = version.payload.data.toString();
-    });
+        process.env[v] = version.payload.data.toString();
+    }
 }
 
 async function bootstrap() {
@@ -22,4 +22,5 @@ async function bootstrap() {
     await app.listen(process.env.PORT || 8976);
     console.log(`App on: ${await app.getUrl()}`);
 }
+
 bootstrap();

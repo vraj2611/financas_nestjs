@@ -8,6 +8,6 @@ export class AppController {
 
     @Get()
     testenv() {
-        return "Bemvindo ao Financas API"
+        return {titulo:"Bemvindo ao Financas API", descr:"dfsdfasdfasdfasf"}
     }
 }

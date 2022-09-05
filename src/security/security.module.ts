@@ -7,6 +7,7 @@ import { LoggingService } from './logging.service';
 import { JwtStrategy } from './guards/jwt-auth.guard';
 import { LocalStrategy } from './guards/local-auth.guard';
 import { SecurityController } from './security.controller';
+import * as process from 'process';
 
 @Module({
   imports: [
