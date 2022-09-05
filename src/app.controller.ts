@@ -10,6 +10,7 @@ export class AppController {
 
   @Get()
   async findAll() {
+    this.appServ.logger().info('123456789abcdefghijk');
     return this.appServ.getSecret('TEST_TOKEN');
   }
   
