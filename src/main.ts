@@ -1,11 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as process from 'process';
-import { setEnvVariables } from './gcp-setenv';
 import helmet from 'helmet';
+import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
+
+async function setEnvVariables(variables: string[]) {
+    const client = new SecretManagerServiceClient();
+    variables.forEach(async variable => {
+        const secretpath = `projects/${process.env.GOOGLE_CLOUD_PROJECT}/secrets/${variable}/versions/1`;
+        const [version] = await client.accessSecretVersion({ name: secretpath });
+        process.env[variable] = version.payload.data.toString();
+    });
+}
 
 async function bootstrap() {
-    await setEnvVariables()
+    await setEnvVariables(['LOGGING_PROVIDER_PORT', 'LOGGING_PROVIDER_HOST', 'JWT_SECRET']);
+
     const app = await NestFactory.create(AppModule);
     app.use(helmet())
     app.enableCors();
