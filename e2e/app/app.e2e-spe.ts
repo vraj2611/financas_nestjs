@@ -7,6 +7,7 @@ describe('E2E JWT Sample', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
+    
     const modRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -30,6 +31,6 @@ describe('E2E JWT Sample', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    console.log("fim")
   });
 });

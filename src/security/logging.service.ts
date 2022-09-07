@@ -7,7 +7,7 @@ import { Syslog } from 'winston-syslog';
 export class LoggingService {
     private _logger: winston.Logger
 
-    constructor(    ) {
+    constructor() {
         const logprovider = new Syslog({
             host: process.env.LOGGING_PROVIDER_HOST,
             port: parseInt(process.env.LOGGING_PROVIDER_PORT),
