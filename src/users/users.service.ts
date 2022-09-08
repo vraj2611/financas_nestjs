@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Datastore } from '@google-cloud/datastore';
 import * as argon2 from "argon2";
+import { EntityObject, Entities, entity } from '@google-cloud/datastore/build/src/entity';
 
-export interface IUSer {
+export interface IUser {
     email: string,
     password?: string,
     created_at?: Date,
@@ -19,10 +20,13 @@ export class UsersService {
     }
 
     async addUser(email: string, password: string, name: string): Promise<string> {
-        const dskey = this.ds.key("User")
-        await this.ds.save({
-            key: dskey
-            , data: {
+
+        this.ds.save({
+            key: this.ds.key("User"),
+            excludefromIndexes: [
+                'name', 'password'
+            ],
+            data: {
                 name: name,
                 password: await argon2.hash(password),
                 email: email,
@@ -30,12 +34,20 @@ export class UsersService {
             }
         });
         return name
-
     }
 
-    async getLoggingUser(email: string, password: string) {
-        console.log("sdadsadasdads")
-        return "user"
+    async getUser(email: string): Promise<IUser> {
+        const query = this.ds.createQuery('User').filter('email', email)
+        const [result] = await this.ds.runQuery(query);
+        if (result.length = 0) return null; 
+        const user: IUser = result[0];
+        return user;
+    }
+
+    async logUser(email: string, password: string): Promise<IUser> {
+        const user = await this.getUser(email);
+        if (!await argon2.verify(user.password, password)) return null
+        return user;
     }
 
     async listUsers() {
