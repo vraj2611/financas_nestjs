@@ -1,50 +1,69 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { describe, it, expect, test, afterAll } from '@jest/globals';
-import { doesNotMatch } from 'assert';
+import { describe, expect, test, afterAll } from '@jest/globals';
+
+async function getUserService():Promise<UsersService>{
+    const moduleRef: TestingModule = await Test.createTestingModule({
+        providers: [UsersService],
+    }).compile();
+    return moduleRef.get<UsersService>(UsersService);
+}
+
 
 describe('UsersService', () => {
     let service: UsersService;
+    let emailtest: string;
+
+    
+    beforeAll(async () => {
+        const serv = await getUserService();
+        const users = await serv.listUsers();
+        console.log({users});
+        emailtest = "test_" + Date.now() + "@test.com"
+    })
 
     beforeEach(async () => {
-        const moduleRef: TestingModule = await Test.createTestingModule({
-            providers: [UsersService],
-        }).compile();
-        service = moduleRef.get<UsersService>(UsersService);
+        service = await getUserService()
     });
 
     test('be defined', () => {
         expect(service).toBeDefined();
     });
 
-    // test('create user', async () => {
-    //     expect(await service.addUser("vraj2611@gmail.com", "123", "Vilmar")).toBe("Vilmar")
-    // });
+    test('create user', async () => {
+        const user = await service.addUser(emailtest, "123", "Email para teste");
+        expect(user.email).toBe(emailtest)
+    });
 
     test('get user', async () => {
-        expect((await service.getUser("vraj2611@gmail.com")).email).toBe("vraj2611@gmail.com")
+        const user = await service.getUser(emailtest); 
+        expect(user.email).toBe(emailtest)
     });
 
     test('get user nao existe', async () => {
-        expect(await service.getUser("vraj2611@gmail.co")).toBeFalsy()
+        const user = await service.getUser("_zz" + emailtest);
+        expect(user).toBeFalsy()
     });
 
     test('log user ok', async () => {
-        expect((await service.logUser("vraj2611@gmail.com", "123")).email).toBe("vraj2611@gmail.com")
+        const user = await service.loginUser(emailtest, "123") 
+        expect(user.email).toBe(emailtest)
     });
 
     test('log user password incorreto', async () => {
-        expect( await service.logUser("vraj2611@gmail.com", "_zz")).toBeFalsy()
+        const user = await service.loginUser(emailtest, "zzz") 
+        expect(user).toBeFalsy()
     });
 
-    //   it.each`
-    //     name      | returnVal
-    //     ${'john'} | ${{ userId: 1, username: 'john', password: 'changeme' }}
-    //   `(
-    //     'should call findOne for $name and return $returnVal',
-    //     async ({ name, returnVal }: { name: string; returnVal: IUser }) => {
-    //       expect(await service.findOne(name)).toEqual(returnVal);
-    //     },
-    //   );
+    test('list users', async () => {
+        const users = await service.listUsers();
+        expect(users.length).toBeGreaterThan(0)
+    });
+
+    test('delete user', async () => {
+        await service.deleteUser(emailtest); 
+        const userpos = await service.getUser(emailtest); 
+        expect(userpos).toBeFalsy();
+    });
 
 });

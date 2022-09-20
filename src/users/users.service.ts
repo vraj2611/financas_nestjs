@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Datastore } from '@google-cloud/datastore';
+import { Datastore, Entity } from '@google-cloud/datastore';
 import * as argon2 from "argon2";
-import { EntityObject, Entities, entity } from '@google-cloud/datastore/build/src/entity';
 
 export interface IUser {
     email: string,
@@ -19,9 +18,12 @@ export class UsersService {
         this.ds = new Datastore();
     }
 
-    async addUser(email: string, password: string, name: string): Promise<string> {
+    async addUser(email: string, password: string, name: string): Promise<IUser> {
 
-        this.ds.save({
+        const user = await this.getUser(email);
+        if (user) throw "email ja cadastrado";
+         
+        const result = await this.ds.save({
             key: this.ds.key("User"),
             excludefromIndexes: [
                 'name', 'password'
@@ -33,27 +35,29 @@ export class UsersService {
                 created_at: Date.now()
             }
         });
-        return name
+        return this.getUser(email);
     }
 
     async getUser(email: string): Promise<IUser> {
         const query = this.ds.createQuery('User').filter('email', email)
-        const [result] = await this.ds.runQuery(query);
-        if (result.length = 0) return null; 
-        const user: IUser = result[0];
+        const [[user, ...others], extra] = await this.ds.runQuery(query)
         return user;
     }
 
-    async logUser(email: string, password: string): Promise<IUser> {
+    async loginUser(email: string, password: string): Promise<IUser> {
         const user = await this.getUser(email);
         if (!await argon2.verify(user.password, password)) return null
         return user;
     }
 
-    async listUsers() {
+    async listUsers():Promise<IUser[]> {
         const query = this.ds.createQuery('User')
         const [users] = await this.ds.runQuery(query);
-        console.log(users);
         return users
+    }
+
+    async deleteUser(email:string){
+        const user = await this.getUser(email);
+        await this.ds.delete(user[this.ds.KEY])
     }
 }
