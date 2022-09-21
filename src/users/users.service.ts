@@ -2,13 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Datastore, Entity } from '@google-cloud/datastore';
 import * as argon2 from "argon2";
 
-export interface IUser {
-    email: string,
-    password?: string,
-    created_at?: Date,
-    name?: string
-}
-
 @Injectable()
 export class UsersService {
 
