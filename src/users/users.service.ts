@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Datastore, Entity } from '@google-cloud/datastore';
 import * as argon2 from "argon2";
+import { IUser } from 'src/models/user.class';
 
 @Injectable()
 export class UsersService {

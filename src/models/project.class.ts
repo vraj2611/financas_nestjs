@@ -4,19 +4,19 @@ import { User, IUser } from "./user.class";
 export interface IProject {
     name: string;
     description: string;
-    costs: ICost[];
-    owner: IUser;
-    planners: IUser[];
-    executers: IUser[];
+    costs: ICost[] | Cost[];
+    owner: IUser | User;
+    planners: IUser[] | User[];
+    executers: IUser[] | User[];
 }
 
 export class Project {
     name: string;
     description: string;
     costs: Cost[];
-    owner: User;
-    planners: User[];
-    executers: User[];
+    private owner: User;
+    private planners: User[];
+    private executers: User[];
 
     constructor(info: IProject) {
         this.costs = [];
@@ -24,16 +24,48 @@ export class Project {
         this.executers = [];
         for (const k in info) {
             if (k == "owner") {
-                this[k] = new User(info[k])
+                if (info[k].constructor.name == 'User') {
+                    this[k] = <User>info[k];
+                } else {
+                    this[k] = new User(info[k])
+                }
             } else if (k == "planners") {
-                this[k] = info[k].map(u => new User(u))
+                for (const i of info[k]) {
+                    if( i.constructor.name == 'User') {
+                        this.planners.push(<User>i);
+                    } else {
+                        this.planners.push(new User(i));
+                    }  
+                }
+                
             } else if (k == "executers") {
-                this[k] = info[k].map(u => new User(u))
+                for (const i of info[k]) {
+                    if( i.constructor.name == 'User') {
+                        this.executers.push(<User>i);
+                    } else {
+                        this.executers.push(new User(i));
+                    }  
+                }
+
             } else if (k == "costs") {
-                this[k] = info[k].map(c => new Cost(c))
+                for (const i of info[k]) {
+                    if( i.constructor.name == 'Cost') {
+                        this.costs.push(<Cost>i);
+                    } else {
+                        this.costs.push(new Cost(i));
+                    }  
+                }
             } else {
                 this[k] = info[k]
             }
+        }
+    }
+
+    public getUsers(){
+        return {
+            owner: this.owner,
+            planners: this.planners,
+            executers: this.executers
         }
     }
 
@@ -75,7 +107,7 @@ export class Project {
 
     addCost(user:User, cost:Cost){
         if ((cost.type == TypeCost.PAID) && (!this.isExecuter(user))) throw new Error("User is not executer"); 
-        if ((cost.type == TypeCost.PLANNED) && (!this.isPlanner(user))) throw new Error("User is not executer");
+        if ((cost.type == TypeCost.PLANNED) && (!this.isPlanner(user))) throw new Error("User is not planner");
         this.costs.push(cost);
     }
 

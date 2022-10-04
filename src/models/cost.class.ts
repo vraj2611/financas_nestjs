@@ -12,7 +12,7 @@ export interface ICost {
     description: string;
     date: Date;
     type: TypeCost;
-    createdBy: IUser
+    createdBy: IUser | User;
 }
 
 export class Cost {
@@ -21,15 +21,15 @@ export class Cost {
     description: string;
     date: Date;
     type: TypeCost;
-    createdby: User;
+    createdBy: User;
 
     constructor(info: ICost) {
         if (info.value < 0) throw new Error("value cost is negative")
         for (const k in info) {
             if (k == "category") {
-                this[k] = new Category(info[k])
-            } else if (k == "createdby") {
-                this[k] = new User(info[k])
+                this[k] = (info[k].constructor.name == 'Category') ? info[k] : new Category(info[k])
+            } else if (k == "createdBy") {
+                this[k] = (info[k].constructor.name == 'User') ? <User>info[k] : new User(info[k])
             } else {
                 this[k] = info[k]
             }
