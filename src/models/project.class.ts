@@ -14,6 +14,7 @@ export class Project {
     name: string;
     description: string;
     costs: Cost[];
+    private loggedUser: User;
     private owner: User;
     private planners: User[];
     private executers: User[];
@@ -69,26 +70,35 @@ export class Project {
         }
     }
 
-    private isOwner(user:User):boolean{
-        return user.email == this.owner.email
+    public login(user:User) {
+        if (this.loggedUser) throw new Error("Another User already logged in the project");
+        this.loggedUser = user;
     }
 
-    private isPlanner(user:User):boolean{
+    public logout(){
+        this.loggedUser = null;
+    }
+
+    private isOwner():boolean{
+        return this.loggedUser.email == this.owner.email
+    }
+
+    private isPlanner():boolean{
         for (const p of this.planners) {
-            if (user.email == p.email) return true
+            if (this.loggedUser.email == p.email) return true
         }
         return false
     }
 
-    private isExecuter(user:User):boolean{
+    private isExecuter():boolean{
         for (const e of this.executers) {
-            if (user.email == e.email) return true
+            if (this.loggedUser.email == e.email) return true
         }
         return false
     }
 
-    getTotalPlanned(user:User) {
-        if (!this.isOwner(user) && !this.isPlanner(user) && !this.isExecuter(user)) throw new Error("User not involved in this project");
+    getTotalPlanned() {
+        if (!this.isOwner() && !this.isPlanner() && !this.isExecuter()) throw new Error("User not involved in this project");
         
         return this.costs.reduce((prev, cost) => {
             if (cost.type == TypeCost.PLANNED) return prev + cost.value
@@ -96,8 +106,8 @@ export class Project {
         }, 0)
     }
 
-    getTotalPaid(user:User) {
-        if (!this.isOwner(user) && !this.isPlanner(user) && !this.isExecuter(user)) throw new Error("User not involved in this project");
+    getTotalPaid() {
+        if (!this.isOwner() && !this.isPlanner() && !this.isExecuter()) throw new Error("User not involved in this project");
         
         return this.costs.reduce((prev, cost) => {
             if (cost.type == TypeCost.PAID) return prev + cost.value
@@ -105,23 +115,23 @@ export class Project {
         }, 0)
     }
 
-    addCost(user:User, cost:Cost){
-        if ((cost.type == TypeCost.PAID) && (!this.isExecuter(user))) throw new Error("User is not executer"); 
-        if ((cost.type == TypeCost.PLANNED) && (!this.isPlanner(user))) throw new Error("User is not planner");
+    addCost(cost:Cost){
+        if ((cost.type == TypeCost.PAID) && (!this.isExecuter())) throw new Error("User is not executer"); 
+        if ((cost.type == TypeCost.PLANNED) && (!this.isPlanner())) throw new Error("User is not planner");
         this.costs.push(cost);
     }
 
-    removeCost(user:User, costid: number){
-        if (!this.isOwner(user)) throw new Error("User is not the project owner");
+    removeCost(costid: number){
+        if (!this.isOwner()) throw new Error("User is not the project owner");
     }
 
-    setPlanners(user:User, planners:User[]){
-        if (!this.isOwner(user)) throw new Error("User is not the project owner");
+    setPlanners(planners:User[]){
+        if (!this.isOwner()) throw new Error("User is not the project owner");
         this.planners = planners;
     }
 
-    setExecuters(user:User, execs:User[]){
-        if (!this.isOwner(user)) throw new Error("User is not the project owner");
+    setExecuters(execs:User[]){
+        if (!this.isOwner()) throw new Error("User is not the project owner");
         this.planners = execs;
     }
 
