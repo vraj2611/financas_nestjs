@@ -2,8 +2,7 @@ import { describe, expect, test, afterAll } from '@jest/globals';
 import { User } from './user.class';
 import { Cost, TypeCost } from './cost.class';
 import { Category } from './category.class';
-
-
+import { Project } from './project.class';
 
 describe('Model Project', () => {
     let users: Map<string, User>;
@@ -35,10 +34,18 @@ describe('Model Project', () => {
     })
 
     beforeEach(async () => {
-
     });
 
-    test('be defined', () => {
-
+    test('new project', () => {
+        let proj:Project = new Project({
+            name: "ProjA",
+            description: "description",
+            owner: users.get("owner"),
+            planners: [],
+            executers: [],
+            costs: []    
+        });
+        
+        expect(proj.name).toBe("ProjA");
     });
 });
