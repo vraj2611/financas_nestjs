@@ -73,6 +73,10 @@ export class Project {
     public login(user:User) {
         if (this.loggedUser) throw new Error("Another User already logged in the project");
         this.loggedUser = user;
+        if (!(this.isOwner() || this.isPlanner() || this.isExecuter())) {
+            this.logout()
+            throw new Error("User is not related to the project");
+        }
     }
 
     public logout(){
@@ -98,7 +102,7 @@ export class Project {
     }
 
     getTotalPlanned() {
-        if (!this.isOwner() && !this.isPlanner() && !this.isExecuter()) throw new Error("User not involved in this project");
+        if (!this.isOwner() && !this.isPlanner() && !this.isExecuter()) throw new Error("User is not related to the project");
         
         return this.costs.reduce((prev, cost) => {
             if (cost.type == TypeCost.PLANNED) return prev + cost.value
@@ -107,7 +111,7 @@ export class Project {
     }
 
     getTotalPaid() {
-        if (!this.isOwner() && !this.isPlanner() && !this.isExecuter()) throw new Error("User not involved in this project");
+        if (!this.isOwner() && !this.isPlanner() && !this.isExecuter()) throw new Error("User is not related to the project");
         
         return this.costs.reduce((prev, cost) => {
             if (cost.type == TypeCost.PAID) return prev + cost.value
@@ -132,7 +136,7 @@ export class Project {
 
     setExecuters(execs:User[]){
         if (!this.isOwner()) throw new Error("User is not the project owner");
-        this.planners = execs;
+        this.executers = execs;
     }
 
 }
