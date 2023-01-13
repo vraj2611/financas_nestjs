@@ -44,14 +44,46 @@ describe('Model Project', () => {
         categs.set("ctg_car", new Category({ name: "Car", description: "car" }));
 
         costs = new Map();
-        costs.set('cp', new Cost({
+        costs.set('cp1', new Cost({
             value: 99,
             category: categs.get('ctg_home'),
-            description: "gas",
+            description: "cp1",
             date: new Date(2022, 1, 1),
             type: TypeCost.PLANNED,
-            createdBy: users.get("o1")
-        }))
+            createdBy: users.get("planner1")
+        }));
+        costs.set('cp2', new Cost({
+            value: 50,
+            category: categs.get('ctg_home'),
+            description: "cp2",
+            date: new Date(2022, 1, 1),
+            type: TypeCost.PLANNED,
+            createdBy: users.get("planner2")
+        }));
+        costs.set('ce1', new Cost({
+            value: 88,
+            category: categs.get('ctg_home'),
+            description: "ce1",
+            date: new Date(2022, 1, 1),
+            type: TypeCost.PAID,
+            createdBy: users.get("exec1")
+        }));
+        costs.set('ce2', new Cost({
+            value: 52,
+            category: categs.get('ctg_home'),
+            description: "ce2",
+            date: new Date(2022, 1, 1),
+            type: TypeCost.PAID,
+            createdBy: users.get("exec2")
+        }));
+        costs.set('nce1', new Cost({
+            value: 52,
+            category: categs.get('ctg_home'),
+            description: "ce1",
+            date: new Date(2022, 1, 1),
+            type: TypeCost.PAID,
+            createdBy: users.get("planner1")
+        }));
     })
 
     beforeEach(async () => {
@@ -103,7 +135,7 @@ describe('Model Project', () => {
     test('error unloged action', () => {
         let proj: Project = projs.get('p1');
         proj.logout();
-        expect(() =>{
+        expect(() => {
             proj.setExecuters([users.get("exec1")]);
         }).toThrow();
     });
@@ -116,11 +148,34 @@ describe('Model Project', () => {
         proj.logout();
         proj.login(users.get('exec1'));
 
-        expect(() =>{
+        expect(() => {
             proj.setExecuters([users.get("exec2")]);
         }).toThrow();
     });
 
+    test('add cost to project', () => {
+        let proj: Project = projs.get('p1');
+        proj.logout();
+        proj.login(users.get('owner1'));
+        proj.setExecuters([users.get("exec1")]);
+        proj.logout();
+        proj.login(users.get('exec1'));
+        proj.addCost(costs.get('ce1'));
+        proj.addCost(costs.get('ce2'));
+        expect(proj.getTotalPaid()).toBe(88 + 52);
+    });
 
+    test('erro add cost to project wrong type cost', () => {
+
+        expect(()=> {
+            let proj: Project = projs.get('p1');
+            proj.logout();
+            proj.login(users.get('owner1'));
+            proj.setExecuters([users.get("exec1")]);
+            proj.logout();
+            proj.login(users.get('exec1'));
+            proj.addCost(costs.get('cp1'))
+        }).toThrow();
+    });
 
 });

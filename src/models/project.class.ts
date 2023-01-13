@@ -119,6 +119,14 @@ export class Project {
         }, 0)
     }
 
+    getExtract() {
+        return {
+            costs:this.costs,
+            totalpaid: this.getTotalPaid(),
+            totalplanned: this.getTotalPlanned()
+        }
+    }
+
     addCost(cost:Cost){
         if ((cost.type == TypeCost.PAID) && (!this.isExecuter())) throw new Error("User is not executer"); 
         if ((cost.type == TypeCost.PLANNED) && (!this.isPlanner())) throw new Error("User is not planner");
