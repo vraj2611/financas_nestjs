@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as process from 'process';
 import helmet from 'helmet';
-
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
+
 export async function setEnvVariables() {
     const variables: string[] = ['LOGGING_PROVIDER_PORT', 'LOGGING_PROVIDER_HOST', 'JWT_SECRET'];
     const client = new SecretManagerServiceClient();
@@ -23,5 +23,6 @@ async function bootstrap() {
     process.env.NESTJS_URL = await app.getUrl();
     console.log(`App on: ${process.env.NESTJS_URL}`);
 }
+
 bootstrap()
 
