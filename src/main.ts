@@ -19,9 +19,9 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.use(helmet())
     app.enableCors();
-    await app.listen(process.env.PORT || 8976);
-    process.env.NESTJS_URL = await app.getUrl();
-    console.log(`App on: ${process.env.NESTJS_URL}`);
+    await app.listen(9876, async ()=>{
+        console.log(`App on: ${(await app.getUrl())}`);
+    });    
 }
 
 bootstrap()
