@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Datastore, Entity } from '@google-cloud/datastore';
-import * as argon2 from "argon2";
+import { Datastore } from '@google-cloud/datastore';
 import { IUser } from 'src/models/user.class';
+import { CreateUserDto } from 'src/dtos/createUserDto.class';
 
 @Injectable()
 export class UsersService {
@@ -12,9 +12,9 @@ export class UsersService {
         this.ds = new Datastore();
     }
 
-    async addUser(email: string, password: string, name: string): Promise<IUser> {
+    async createUser(dto:CreateUserDto): Promise<IUser> {
 
-        const user = await this.getUser(email);
+        const user = await this.getUser(dto.email);
         if (user) throw "email ja cadastrado";
          
         const result = await this.ds.save({
@@ -23,13 +23,13 @@ export class UsersService {
                 'name', 'password'
             ],
             data: {
-                name: name,
-                password: await argon2.hash(password),
-                email: email,
+                name: dto.name,
+                password: dto.password,
+                email: dto.email,
                 created_at: Date.now()
             }
         });
-        return this.getUser(email);
+        return this.getUser(dto.email);
     }
 
     async getUser(email: string): Promise<IUser> {
@@ -38,14 +38,8 @@ export class UsersService {
         return user;
     }
 
-    async loginUser(email: string, password: string): Promise<IUser> {
-        const user = await this.getUser(email);
-        if (!await argon2.verify(user.password, password)) return null
-        return user;
-    }
-
     async listUsers():Promise<IUser[]> {
-        const query = this.ds.createQuery('User')
+        const query = this.ds.createQuery('User');
         const [users] = await this.ds.runQuery(query);
         return users
     }

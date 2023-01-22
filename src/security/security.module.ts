@@ -5,10 +5,8 @@ import { SecurityService } from './security.service';
 import { LoggingService } from './logging.service';
 import { JwtStrategy } from './guards/jwt-auth.guard';
 import { LocalStrategy } from './guards/local-auth.guard';
-import { SecurityController } from './security.controller';
-
-import { UsersService } from 'src/services/users.service';
 import { ServicesModule } from 'src/services/services.module';
+import { UsersService } from 'src/services/users.service';
 
 @Module({
   imports: [
@@ -19,7 +17,7 @@ import { ServicesModule } from 'src/services/services.module';
       signOptions: { expiresIn: '60s' },
     }),
   ],
-  controllers: [SecurityController],
+  controllers: [],
   providers: [SecurityService, LoggingService, LocalStrategy, JwtStrategy],
   exports: [SecurityService],
 })

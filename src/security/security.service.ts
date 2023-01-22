@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { JwtService } from '@nestjs/jwt';
+import * as argon2 from "argon2";
+import { User, IUser } from 'src/models/user.class';
+import { CreateUserDto } from 'src/dtos/createUserDto.class';
 
 @Injectable()
 export class SecurityService {
 
     constructor(
-        private readonly usersService: UsersService,
-        private readonly jwtService: JwtService,
+        private usersService: UsersService,
+        private jwtService: JwtService,
     ) { }
 
-    async validateUser(username: string, pass: string): Promise<any> {
-        const user = await this.usersService.loginUser(username, pass);
-        if (user) return user
-        return null;
+    async createUser(dto : CreateUserDto){
+        dto.password = await argon2.hash(dto.password);
+        return this.usersService.createUser(dto);   
     }
 
-    async login(user: any) {
-        const payload = { username: user.username, sub: user.userId };
+    async loginUser(email: string, password: string): Promise<any> {
+        const user = await this.usersService.getUser(email);
+        if (!await argon2.verify(user.password, password)) throw "email e/ou senha incorretos";
         return {
-            access_token: this.jwtService.sign(payload),
+            access_token: this.jwtService.sign({email: user.email}),
         };
     }
-
 }
