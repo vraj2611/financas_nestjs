@@ -20,9 +20,10 @@ export class SecurityService {
 
     async loginUser(email: string, password: string): Promise<any> {
         const user = await this.usersService.getUser(email);
-        if (!await argon2.verify(user.password, password)) throw "email e/ou senha incorretos";
+        if (!await argon2.verify(user.password, password)) throw new Error("email e/ou senha incorretos");
         return {
-            access_token: this.jwtService.sign({email: user.email}),
+            access_token: this.jwtService.sign({"user": email}),
         };
     }
+
 }

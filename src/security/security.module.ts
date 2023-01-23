@@ -13,7 +13,7 @@ import { UsersService } from 'src/services/users.service';
     ServicesModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET || 'test',
       signOptions: { expiresIn: '60s' },
     }),
   ],

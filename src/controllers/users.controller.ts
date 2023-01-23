@@ -34,9 +34,9 @@ export class UsersController {
     @Post('login')
     async login(@Body() dto: LoginDto) {
         try {
-            return this.secServ.loginUser(dto.email, dto.password);
+            return await this.secServ.loginUser(dto.email, dto.password);
         } catch (error) {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 
