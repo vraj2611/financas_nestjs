@@ -1,51 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { Datastore } from '@google-cloud/datastore';
 import { IUser } from 'src/models/user.class';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
+import { UserRepository } from 'src/repositories/users.repository';
 
 @Injectable()
 export class UsersService {
+    
+    constructor(private repo: UserRepository) {}
 
-    private ds: Datastore;
-
-    constructor() {
-        this.ds = new Datastore();
-    }
-
-    async createUser(dto:CreateUserDto): Promise<IUser> {
+    async createUser(dto: CreateUserDto): Promise<IUser> {
 
         const user = await this.getUser(dto.email);
-        if (user) throw "email ja cadastrado";
-         
-        const result = await this.ds.save({
-            key: this.ds.key("User"),
-            excludefromIndexes: [
-                'name', 'password'
-            ],
-            data: {
-                name: dto.name,
-                password: dto.password,
-                email: dto.email,
-                created_at: Date.now()
-            }
+        if (user) throw "email already exists";
+
+        this.repo.save({
+            name: dto.name,
+            password: dto.password,
+            email: dto.email,
+            created_at: Date.now()
+
         });
         return this.getUser(dto.email);
     }
 
     async getUser(email: string): Promise<IUser> {
-        const query = this.ds.createQuery('User').filter('email', email)
-        const [[user, ...others], extra] = await this.ds.runQuery(query)
-        return user;
+        return this.repo.getBy('email', email);
     }
 
-    async listUsers():Promise<IUser[]> {
-        const query = this.ds.createQuery('User');
-        const [users] = await this.ds.runQuery(query);
-        return users
+    async listUsers(): Promise<IUser[]> {
+        return this.repo.listAll();
     }
 
-    async deleteUser(email:string){
+    async deleteUser(email: string) {
         const user = await this.getUser(email);
-        await this.ds.delete(user[this.ds.KEY])
+        await this.repo.getDatastore().delete(user[this.repo.getDatastore().KEY])
     }
 }

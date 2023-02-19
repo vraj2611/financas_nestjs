@@ -1,17 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCostDto } from 'src/dtos/createCostDto.class';
 import { ICost } from 'src/models/cost.class';
-import { Repository } from './repository.class';
+import { CostRepository } from 'src/repositories/costs.repository';
 
 
 @Injectable()
 export class CostsService {
 
-    private repo: Repository;
-
-    constructor() {
-        this.repo = new Repository("Cost", [])
-    }
+    constructor(private repo: CostRepository) {}
 
     // async createCost(dto:CreateCostDto): Promise<ICost> {
 

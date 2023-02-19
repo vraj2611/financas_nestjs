@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Request, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, HttpException, HttpStatus, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/services/users.service';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
-import { LocalAuthGuard } from 'src/security/guards/local-auth.guard';
-import { JwtAuthGuard } from 'src/security/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/security/jwt-auth.guard';
 import { LoginDto } from 'src/dtos/loginDto.class';
 import { SecurityService } from 'src/security/security.service';
+import { IUser } from 'src/models/user.class';
 
 @Controller('users')
 export class UsersController {
@@ -25,7 +25,8 @@ export class UsersController {
     @Post()
     async createUser(@Body() dto: CreateUserDto) {
         try {
-            return await this.secServ.createUser(dto);
+            dto.password = await this.secServ.hashPassword(dto.password);
+            return await this.userServ.createUser(dto);
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST);
         }
@@ -34,11 +35,21 @@ export class UsersController {
     @Post('login')
     async login(@Body() dto: LoginDto) {
         try {
-            return await this.secServ.loginUser(dto.email, dto.password);
+            const user:IUser = await this.userServ.getUser(dto.email);
+            if (!await this.secServ.verifyPassword(user.password, dto.password)){
+                throw new UnauthorizedException("email or password incorrect.")
+            }
+            return this.secServ.createJwt({email: user.email});
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Post('token')
+    async checkToken(@Body() token:{token:string}){
+        return this.secServ.extractJwt(token.token);
+    }
+
 
     @UseGuards(JwtAuthGuard)
     @Get('profile')

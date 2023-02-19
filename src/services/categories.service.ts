@@ -1,16 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from 'src/dtos/createCategoryDto.class';
 import { ICategory } from 'src/models/category.class';
-import { Repository } from './repository.class';
+import { CostRepository } from 'src/repositories/costs.repository';
 
 @Injectable()
 export class CategoriesService {
 
-    private repo: Repository;
-
-    constructor() {
-        this.repo = new Repository("Category", [])
-    }
+    constructor(private repo: CostRepository){}
 
     async createCategory(dto:CreateCategoryDto): Promise<ICategory> {
 

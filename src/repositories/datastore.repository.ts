@@ -1,6 +1,12 @@
 import { Datastore } from '@google-cloud/datastore';
 
-export class Repository {
+export interface IRepository {
+    listAll(): Promise<any[]>
+    getBy(property: string, value: any): Promise<any>
+    save(data: Object): Promise<any>
+}
+
+export class DatastoreRepository implements IRepository {
 
     private ds: Datastore;
     private collection_name: string;
@@ -12,7 +18,7 @@ export class Repository {
         this.excludefromIndexes = excludeFromIndexes;
     }
 
-    async listAll():Promise<any[]> {
+    async listAll(): Promise<any[]> {
         const query = this.ds.createQuery(this.collection_name);
         const [results] = await this.ds.runQuery(query);
         return results
@@ -24,7 +30,7 @@ export class Repository {
         return result;
     }
 
-    async save(data: Object): Promise<any>{
+    async save(data: Object): Promise<any> {
         return await this.ds.save({
             key: this.ds.key(this.collection_name),
             excludefromIndexes: this.excludefromIndexes,
