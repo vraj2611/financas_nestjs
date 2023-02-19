@@ -5,12 +5,8 @@ import { CreateProjectDto } from 'src/dtos/createProjectDto.class';
 @Controller('projects')
 export class ProjectsController {
     constructor(
-        private readonly serv: ProjectsService) { }
-
-    @Get()
-    test(){
-        return "project ok"
-    }
+        private readonly serv: ProjectsService
+    ) { }
 
     @Get('list')
     async listUsers() {

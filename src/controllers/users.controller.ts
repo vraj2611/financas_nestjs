@@ -2,18 +2,21 @@ import { Controller, Get, Post, Body, Request, HttpException, HttpStatus, UseGua
 import { UsersService } from 'src/services/users.service';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { SecurityService } from 'src/security/security.service';
+import { Public } from 'src/security/jwt.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(
         private readonly userServ: UsersService,
-        private readonly secServ: SecurityService) { }
+        private readonly secServ: SecurityService
+    ) { }
 
     @Get('list')
     async listUsers() {
         return await this.userServ.listUsers();
     }
 
+    @Public()
     @Post()
     async createUser(@Body() dto: CreateUserDto) {
         try {

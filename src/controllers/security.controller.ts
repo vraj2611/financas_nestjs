@@ -1,13 +1,14 @@
 import { Controller, Request, Post, UseGuards, Get, Body } from '@nestjs/common';
 import { SecurityService } from '../security/security.service';
 import { LocalGuard } from '../security/local.strategy';
-import { JwtGuard } from '../security/jwt.estrategy';
+import { Public } from 'src/security/jwt.guard';
 
 @Controller()
 export class SecurityController {
 
     constructor(private serv: SecurityService) { }
 
+    @Public()
     @UseGuards(LocalGuard)
     @Post('login')
     async login(@Request() req) {
@@ -19,7 +20,6 @@ export class SecurityController {
         }
     }
 
-    @UseGuards(JwtGuard)
     @Get('profile')
     getProfile(@Request() req) {
         console.log(req.user);

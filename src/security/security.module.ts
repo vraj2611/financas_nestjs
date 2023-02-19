@@ -7,6 +7,8 @@ import { ServicesModule } from 'src/services/services.module';
 import { LocalStrategy } from './local.strategy';
 import { SecurityController } from '../controllers/security.controller';
 import { JwtStrategy } from './jwt.estrategy';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtGuard } from './jwt.guard';
 
 @Module({
     imports: [
@@ -15,7 +17,16 @@ import { JwtStrategy } from './jwt.estrategy';
         JwtModule
     ],
     controllers: [SecurityController],
-    providers: [SecurityService, LoggingService, LocalStrategy, JwtStrategy],
+    providers: [
+        SecurityService,
+        LoggingService,
+        LocalStrategy,
+        JwtStrategy,
+        {
+            provide: APP_GUARD,
+            useClass: JwtGuard,
+        }
+    ],
     exports: [SecurityService],
 })
 export class SecurityModule { }
