@@ -11,8 +11,8 @@ export async function setEnvVariables() {
         const secretpath = `projects/${process.env.GOOGLE_CLOUD_PROJECT}/secrets/${v}/versions/1`;
         const [version] = await client.accessSecretVersion({ name: secretpath });
         process.env[v] = version.payload.data.toString();
-        //console.log(`ENV ${v} OK! ${process.env[v]}`);
     }
+    console.log("Setting env variables...");
 }
 
 async function bootstrap() {

@@ -18,11 +18,25 @@ export class SecurityService {
     }
     
     createJwt(payload: string | object){
-        return {"token": this.jwtService.sign(payload)};
+        const token = this.jwtService.sign(payload, {
+            secret: process.env.JWT_SECRET,
+            expiresIn: '1h'
+        })
+        return {"authtoken": token}; 
     }
 
     extractJwt(token:string){
-        return this.jwtService.decode(token);
+        return {
+            payload: this.jwtService.decode(token),
+            verify: this.verify(token)
+        }
+    }
+
+    verify(token:string){
+        return this.jwtService.verify(token,{
+            ignoreExpiration: true,
+            secret: process.env.JWT_SECRET
+        })
     }
 
 }
