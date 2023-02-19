@@ -25,18 +25,4 @@ export class SecurityService {
         return {"authtoken": token}; 
     }
 
-    extractJwt(token:string){
-        return {
-            payload: this.jwtService.decode(token),
-            verify: this.verify(token)
-        }
-    }
-
-    verify(token:string){
-        return this.jwtService.verify(token,{
-            ignoreExpiration: true,
-            secret: process.env.JWT_SECRET
-        })
-    }
-
 }

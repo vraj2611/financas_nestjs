@@ -8,13 +8,13 @@ export class ProjectsController {
         private readonly serv: ProjectsService
     ) { }
 
-    @Get('list')
-    async listUsers() {
+    @Get()
+    async list() {
         return await this.serv.listProjects();
     }
 
     @Post()
-    async createUser(@Body() dto: CreateProjectDto) {
+    async createProject(@Body() dto: CreateProjectDto) {
         try {
             return await this.serv.createProject(dto);
         } catch (error) {

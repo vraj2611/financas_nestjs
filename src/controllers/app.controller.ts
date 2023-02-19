@@ -4,9 +4,15 @@ import { LocalGuard } from '../security/local.strategy';
 import { Public } from 'src/security/jwt.guard';
 
 @Controller()
-export class SecurityController {
+export class AppController {
 
     constructor(private serv: SecurityService) { }
+
+    @Public()
+    @Get()
+    welcome() {
+        return {titulo:"Welcome to Finance API", hora: new Date()}
+    }
 
     @Public()
     @UseGuards(LocalGuard)
@@ -32,8 +38,4 @@ export class SecurityController {
         return {"OK": 1};
     }
 
-    @Post('val')
-    validar(@Body() bd){
-        return this.serv.extractJwt(bd['authtoken']);
-    }
 }
