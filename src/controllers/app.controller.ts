@@ -11,7 +11,7 @@ export class AppController {
     @Public()
     @Get()
     welcome() {
-        return {titulo:"Welcome to Finance API", hora: new Date()}
+        return {message:'Welcome to Finance API', time: new Date()}
     }
 
     @Public()

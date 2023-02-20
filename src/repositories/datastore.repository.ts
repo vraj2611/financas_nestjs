@@ -4,6 +4,7 @@ export interface IRepository {
     listAll(): Promise<any[]>
     getBy(property: string, value: any): Promise<any>
     save(data: Object): Promise<any>
+    delete(data:Object): Promise<any>
 }
 
 export class DatastoreRepository implements IRepository {
@@ -36,6 +37,10 @@ export class DatastoreRepository implements IRepository {
             excludefromIndexes: this.excludefromIndexes,
             data: data
         });
+    }
+
+    async delete(entity:Object): Promise<any>{
+        return this.ds.delete(entity[this.ds.KEY])
     }
 
     getDatastore(): Datastore {

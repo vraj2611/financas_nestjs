@@ -12,7 +12,7 @@ export async function setEnvVariables() {
         const [version] = await client.accessSecretVersion({ name: secretpath });
         process.env[v] = version.payload.data.toString();
     }
-    console.log("Setting env variables...");
+    console.log("Setting enviroment variables...");
 }
 
 async function bootstrap() {
@@ -21,7 +21,7 @@ async function bootstrap() {
     app.use(helmet())
     app.enableCors();
     await app.listen(9876, async ()=>{
-        console.log(`App on: ${(await app.getUrl())}`);
+        console.log(`App listen on: ${(await app.getUrl())}`);
     });    
 }
 

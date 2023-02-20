@@ -3,12 +3,16 @@ export interface IUser {
     name:string;
     password?:string;
     id?:number;    
+    creditcard:string;
+    phone:string;
 }
 
 export class User {
     email:string;
     name:string;
     password:string;
+    creditcard:string;
+    phone:string;
     id:number;
 
     constructor(info:IUser){
