@@ -31,6 +31,12 @@ export class DatastoreRepository implements IRepository {
         return result;
     }
 
+    async listBy(property: string, value: any): Promise<any> {
+        const query = this.ds.createQuery(this.collection_name).filter(property, value)
+        const [[result], extra] = await this.ds.runQuery(query)
+        return result;
+    }
+
     async save(data: Object): Promise<any> {
         return await this.ds.save({
             key: this.ds.key(this.collection_name),

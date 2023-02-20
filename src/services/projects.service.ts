@@ -2,23 +2,30 @@ import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from 'src/dtos/createProjectDto.class';
 import { IProject } from 'src/models/project.class';
 import { ProjectRepository } from 'src/repositories/projects.repository';
+import { RoleRepository } from 'src/repositories/roles.repository';
+import { Role } from 'src/models/role.enum';
+import { CreateRoleDto } from 'src/dtos/createRoleDto.class';
 
 
 @Injectable()
 export class ProjectsService {
 
-    constructor(private repo: ProjectRepository) {}
+    constructor(
+        private repo: ProjectRepository,
+        private rolerepo: RoleRepository) {}
 
     async createProject(dto:CreateProjectDto): Promise<IProject> {
 
         const proj = await this.getProject(dto.name);
         if (proj) throw "Project already exists";
         
-        await this.repo.save({
-            name: dto.name,
-            description: dto.description,
-            owner: dto.owner
-        })
+        dto.created_at = Date.now()
+        await this.repo.save(dto)
+        
+        await this.setRole({
+            user: dto.owner,
+            role: Role.Owner,
+            project: dto.name})
 
         return this.getProject(dto.name);
     }
@@ -29,6 +36,11 @@ export class ProjectsService {
 
     async listProjects():Promise<IProject[]> {
         return this.repo.listAll();
+    }
+
+    async setRole(dto: CreateRoleDto){
+        dto.created_at = Date.now();
+        return this.rolerepo.save(dto);
     }
 
 }

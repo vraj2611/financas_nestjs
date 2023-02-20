@@ -5,6 +5,7 @@ export interface IUser {
     id?:number;    
     creditcard:string;
     phone:string;
+    roles?:any[];
 }
 
 export class User {

@@ -20,9 +20,9 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.use(helmet())
     app.enableCors();
-    await app.listen(9876, async ()=>{
+    await app.listen(9876, async () => {
         console.log(`App listen on: ${(await app.getUrl())}`);
-    });    
+    });
 }
 
 bootstrap()
