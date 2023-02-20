@@ -3,6 +3,7 @@ import { SecurityService } from '../security/security.service';
 import { LocalGuard } from '../security/local.strategy';
 import { Public } from 'src/security/jwt.guard';
 import { Throttle } from '@nestjs/throttler';
+import { LoginDto } from 'src/dtos/loginDto.class';
 
 @Controller()
 export class AppController {
@@ -19,11 +20,10 @@ export class AppController {
     @Public()
     @UseGuards(LocalGuard)
     @Post('login')
-    async login(@Request() req) {
+    async login(@Body() dto: LoginDto) {
         try {
-            return this.serv.createJwt({ email: req.user.email })
+            return this.serv.createJwt({ email: dto.email })
         } catch (error) {
-            console.log(error);
             return error;
         }
     }

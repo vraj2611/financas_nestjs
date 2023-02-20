@@ -1,7 +1,7 @@
 {
   "name": "financas",
   "version": "0.0.1",
-  "description": "Restful API for project cost controller",
+  "description": "Restful API for project finance controller",
   "author": "Vilmar Rangel Araujo Junior",
   "license": "MIT",
   "scripts": {
@@ -27,6 +27,7 @@
     "@nestjs/jwt": "9.0.0",
     "@nestjs/passport": "9.0.0",
     "@nestjs/platform-express": "9.0.1",
+    "@nestjs/swagger": "^6.2.1",
     "@nestjs/throttler": "^3.0.0",
     "@types/winston-syslog": "^2.4.0",
     "argon2": "^0.29.1",

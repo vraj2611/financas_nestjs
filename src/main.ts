@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as process from 'process';
 import helmet from 'helmet';
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 export async function setEnvVariables() {
     const variables: string[] = ['LOGGING_PROVIDER_PORT', 'LOGGING_PROVIDER_HOST', 'JWT_SECRET'];
@@ -17,7 +18,17 @@ export async function setEnvVariables() {
 
 async function bootstrap() {
     await setEnvVariables();
+
     const app = await NestFactory.create(AppModule);
+    const config = new DocumentBuilder()
+    .setTitle('Project Finance API')
+    .setDescription('API developed to control cost that occurred in projects.')
+    .setVersion('1.0')
+    .build();
+    
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+
     app.use(helmet())
     app.enableCors();
     await app.listen(9876, async () => {
