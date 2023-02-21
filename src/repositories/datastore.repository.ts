@@ -1,55 +1,73 @@
 import { Datastore } from '@google-cloud/datastore';
 
 export interface IRepository {
+    get(id: string): Promise<any>
+    delete(id: string): Promise<any>
     listAll(): Promise<any[]>
     getBy(property: string, value: any): Promise<any>
     save(data: Object): Promise<any>
-    delete(data:Object): Promise<any>
+    
 }
 
 export class DatastoreRepository implements IRepository {
 
     private ds: Datastore;
-    private collection_name: string;
+    private kind: string;
     private excludefromIndexes: string[];
 
-    constructor(collection_name: string, excludeFromIndexes: string[]) {
+    constructor(kind: string, excludeFromIndexes: string[]) {
         this.ds = new Datastore();
-        this.collection_name = collection_name;
+        this.kind = kind;
         this.excludefromIndexes = excludeFromIndexes;
     }
 
+    async get(id: string) {
+        const key = this.ds.key([this.kind, +id]);
+        const [result] = await this.ds.get(key);
+        return this.exposeId(result);
+    }
+
+    async update(id:string, new_values:Object){
+        let entity = this.get(id);
+        console.log({new_values,entity});
+        for (const key in new_values) entity[key] = new_values[key]
+        return this.ds.save(entity);
+    }
+
+    async delete(id: string) {
+        const key = this.ds.key([this.kind, +id]);
+        return this.ds.delete(key)
+    }
+
     async listAll(): Promise<any[]> {
-        const query = this.ds.createQuery(this.collection_name);
+        const query = this.ds.createQuery(this.kind);
         const [results] = await this.ds.runQuery(query);
-        return results
+        return results.map(r => this.exposeId(r));
     }
 
     async getBy(property: string, value: any): Promise<any> {
-        const query = this.ds.createQuery(this.collection_name).filter(property, value)
-        const [[result, ...others], extra] = await this.ds.runQuery(query)
-        return result;
+        const query = this.ds.createQuery(this.kind).filter(property, value)
+        const [[result, ...others], extra] = await this.ds.runQuery(query);
+        if (!result) return null; 
+        return this.exposeId(result);
     }
 
     async listBy(property: string, value: any): Promise<any> {
-        const query = this.ds.createQuery(this.collection_name).filter(property, value)
+        const query = this.ds.createQuery(this.kind).filter(property, value)
         const [[result], extra] = await this.ds.runQuery(query)
         return result;
     }
 
     async save(data: Object): Promise<any> {
         return await this.ds.save({
-            key: this.ds.key(this.collection_name),
+            key: this.ds.key(this.kind),
             excludefromIndexes: this.excludefromIndexes,
             data: data
         });
     }
 
-    async delete(entity:Object): Promise<any>{
-        return this.ds.delete(entity[this.ds.KEY])
-    }
-
-    getDatastore(): Datastore {
-        return this.ds
+    private exposeId(entity: any) {
+        entity.id = entity[this.ds.KEY].id
+        return entity
     }
 }

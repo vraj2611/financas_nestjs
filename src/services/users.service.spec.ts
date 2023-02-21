@@ -36,12 +36,12 @@ describe('UsersService', () => {
     });
 
     test('get user', async () => {
-        const user = await service.getUser(emailtest); 
+        const user = await service.getByEmail(emailtest); 
         expect(user.email).toBe(emailtest)
     });
 
     test('get user nao existe', async () => {
-        const user = await service.getUser("_zz" + emailtest);
+        const user = await service.getByEmail("_zz" + emailtest);
         expect(user).toBeFalsy()
     });
 
@@ -62,7 +62,7 @@ describe('UsersService', () => {
 
     test('delete user', async () => {
         await service.deleteUser(emailtest); 
-        const userpos = await service.getUser(emailtest); 
+        const userpos = await service.getByEmail(emailtest); 
         expect(userpos).toBeFalsy();
     });
 

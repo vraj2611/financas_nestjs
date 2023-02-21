@@ -1,9 +1,9 @@
-import { Controller, Request, Post, UseGuards, Get, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Body, Req } from '@nestjs/common';
 import { SecurityService } from '../security/security.service';
 import { LocalGuard } from '../security/local.strategy';
 import { Public } from 'src/security/jwt.guard';
 import { Throttle } from '@nestjs/throttler';
-import { LoginDto } from 'src/dtos/loginDto.class';
+import { LoginUserDto } from 'src/dtos/loginUserDto.class';
 
 @Controller()
 export class AppController {
@@ -20,19 +20,12 @@ export class AppController {
     @Public()
     @UseGuards(LocalGuard)
     @Post('login')
-    async login(@Body() dto: LoginDto) {
+    async login(@Req() req) {
         try {
-            return this.serv.createJwt({ email: dto.email })
+            return this.serv.createJwt({ id: req.user.id })
         } catch (error) {
             return error;
         }
     }
-
-    @Get('profile')
-    getProfile(@Request() req) {
-        console.log(req.user);
-        return "ok";
-    }
-
 
 }

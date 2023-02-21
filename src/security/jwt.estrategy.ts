@@ -5,7 +5,7 @@ import { UsersService } from 'src/services/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private userv: UsersService) {
+    constructor(private serv: UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromHeader('authtoken'),
             ignoreExpiration: true,
@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     validate(payload: any) {
-        return this.userv.getUser(payload.email);
+        return this.serv.get(payload.id);
     }
     
 }

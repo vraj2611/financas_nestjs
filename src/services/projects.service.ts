@@ -12,20 +12,21 @@ export class ProjectsService {
 
     constructor(
         private repo: ProjectRepository,
-        private rolerepo: RoleRepository) {}
+        private rolerepo: RoleRepository) { }
 
-    async createProject(dto:CreateProjectDto): Promise<IProject> {
+    async createProject(dto: CreateProjectDto): Promise<IProject> {
 
         const proj = await this.getProject(dto.name);
         if (proj) throw "Project already exists";
-        
+
         dto.created_at = Date.now()
         await this.repo.save(dto)
-        
+
         await this.setRole({
-            user: dto.owner,
+            user_id: dto.owner,
             role: Role.Owner,
-            project: dto.name})
+            project_id: dto.name,
+        })
 
         return this.getProject(dto.name);
     }
@@ -34,12 +35,12 @@ export class ProjectsService {
         return this.repo.getBy('name', name);
     }
 
-    async listProjects():Promise<IProject[]> {
+    async listProjects(): Promise<IProject[]> {
         return this.repo.listAll();
     }
 
-    async setRole(dto: CreateRoleDto){
-        dto.created_at = Date.now();
+    async setRole(dto: CreateRoleDto) {
+        dto.granted_at = Date.now();
         return this.rolerepo.save(dto);
     }
 

@@ -4,6 +4,7 @@ import * as process from 'process';
 import helmet from 'helmet';
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 export async function setEnvVariables() {
     const variables: string[] = ['LOGGING_PROVIDER_PORT', 'LOGGING_PROVIDER_HOST', 'JWT_SECRET'];
@@ -16,10 +17,7 @@ export async function setEnvVariables() {
     console.log("Setting enviroment variables...");
 }
 
-async function bootstrap() {
-    await setEnvVariables();
-
-    const app = await NestFactory.create(AppModule);
+export async function createSwagger(app){
     const config = new DocumentBuilder()
     .setTitle('Project Finance API')
     .setDescription('API developed to control cost that occurred in projects.')
@@ -28,7 +26,13 @@ async function bootstrap() {
     
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
+}
 
+async function bootstrap() {
+    await setEnvVariables();
+    const app = await NestFactory.create(AppModule);
+    createSwagger(app);
+    app.useGlobalPipes(new ValidationPipe());
     app.use(helmet())
     app.enableCors();
     await app.listen(9876, async () => {

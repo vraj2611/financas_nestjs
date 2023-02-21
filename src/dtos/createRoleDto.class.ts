@@ -1,8 +1,9 @@
 import { Role } from "src/models/role.enum"
 
 export class CreateRoleDto {
-    user: string;
+    user_id: string;
     role: Role;
-    project: string;
-    created_at?:number;
+    project_id: string;
+    granted_at?:number;
+    revoked_at?:number;
 }
