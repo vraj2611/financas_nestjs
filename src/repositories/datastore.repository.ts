@@ -5,7 +5,7 @@ export interface IRepository {
     delete(id: string): Promise<any>
     listAll(): Promise<any[]>
     getBy(property: string, value: any): Promise<any>
-    save(data: Object): Promise<any>
+    create(data: Object): Promise<any>
     
 }
 
@@ -27,11 +27,23 @@ export class DatastoreRepository implements IRepository {
         return this.exposeId(result);
     }
 
-    async update(id:string, new_values:Object){
-        let entity = this.get(id);
-        console.log({new_values,entity});
-        for (const key in new_values) entity[key] = new_values[key]
-        return this.ds.save(entity);
+    async create(data: Object): Promise<any> {
+        return await this.ds.save({
+            key: this.ds.key(this.kind),
+            excludefromIndexes: this.excludefromIndexes,
+            data: data
+        });
+    }
+
+    async update(data:Object){
+        const id = data['id'];
+        const key = this.ds.key([this.kind, +id]);
+        delete data['id'];
+        return this.ds.save({
+            key: key,
+            excludefromIndexes: this.excludefromIndexes,
+            data: data 
+        });
     }
 
     async delete(id: string) {
@@ -56,14 +68,6 @@ export class DatastoreRepository implements IRepository {
         const query = this.ds.createQuery(this.kind).filter(property, value)
         const [[result], extra] = await this.ds.runQuery(query)
         return result;
-    }
-
-    async save(data: Object): Promise<any> {
-        return await this.ds.save({
-            key: this.ds.key(this.kind),
-            excludefromIndexes: this.excludefromIndexes,
-            data: data
-        });
     }
 
     private exposeId(entity: any) {

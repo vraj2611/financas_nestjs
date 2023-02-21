@@ -20,7 +20,7 @@ export class ProjectsService {
         if (proj) throw "Project already exists";
 
         dto.created_at = Date.now()
-        await this.repo.save(dto)
+        await this.repo.create(dto)
 
         await this.setRole({
             user_id: dto.owner,
@@ -41,7 +41,7 @@ export class ProjectsService {
 
     async setRole(dto: CreateRoleDto) {
         dto.granted_at = Date.now();
-        return this.rolerepo.save(dto);
+        return this.rolerepo.create(dto);
     }
 
 }

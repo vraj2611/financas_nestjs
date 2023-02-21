@@ -5,12 +5,12 @@ export class UpdateUserDto {
     id?:string;
 
     @ApiProperty()
-    name: string;
+    name?: string;
 
     @ApiProperty()
-    creditcard: string;
+    creditcard?: string;
     
     @ApiProperty()
-    phone: string;
+    phone?: string;
 
 }

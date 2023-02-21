@@ -18,7 +18,7 @@ export class UsersService {
         if (user) throw new BadRequestException("email already exists");
 
         dto.created_at = Date.now();
-        const res = await this.repo.save(dto);
+        const res = await this.repo.create(dto);
         console.log(res);
         return;
     }
@@ -32,7 +32,7 @@ export class UsersService {
     }
 
     async updateUser(dto: UpdateUserDto) {
-        return this.repo.update(dto.id, dto);
+        return this.repo.update(dto);
     }
 
     async getUserRoles(email: string) {
@@ -52,10 +52,9 @@ export class UsersService {
     }
 
     async deleteUser(id: string) {
-        //this.repo.delete(id)
         const user = await this.get(id);
         user.name = "Deleted";
-        this.updateUser(user);
+        return this.updateUser(user);
     }
 
 }

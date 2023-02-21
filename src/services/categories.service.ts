@@ -13,7 +13,7 @@ export class CategoriesService {
         const proj = await this.getCategory(dto.name);
         if (proj) throw "Category already exists";
         
-        await this.repo.save({
+        await this.repo.create({
             name: dto.name,
             description: dto.description
         })
