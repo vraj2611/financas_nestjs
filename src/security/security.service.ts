@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from "argon2";
-import { createCipheriv, randomBytes, scrypt, createDecipheriv, Cipher, Decipher, scryptSync } from 'crypto';
-import { promisify } from 'util';
+import { createCipheriv, createDecipheriv, scryptSync, Cipher, Decipher } from 'crypto';
 
 @Injectable()
 export class SecurityService {
 
-    private cipher: Cipher;
-    private decipher: Decipher;
+    private key: Buffer;
+    private iv: Buffer;
 
     constructor(
         private jwtService: JwtService,
     ) {
-       // this.bootstrapCrypto();
+        this.iv = Buffer.from(process.env.JWT_SECRET).slice(0, 16);
+        this.key = scryptSync(process.env.JWT_SECRET, 'salt', 32);
     }
+
 
     hashPassword(password: string) {
         return argon2.hash(password);
@@ -33,47 +34,33 @@ export class SecurityService {
     }
 
     async encrypt_object<T>(obj: T, fields: string[]): Promise<T> {
-        // for (const key of fields) {
-        //     obj[key] = await this.encrypt_text(obj[key]);
-        // }
+        for (const key of fields) {
+            obj[key] = await this.encrypt_text(obj[key]);
+        }
         return obj;
     }
 
     async decrypt_object<T>(obj: T, fields: string[]): Promise<T> {
-        // for (const key of fields) {
-        //     obj[key] = await this.decrypt_text(obj[key]);
-        // }
+        for (const key of fields) {
+            obj[key] = await this.decrypt_text(obj[key]);
+        }
         return obj;
     }
 
-    private async bootstrapCrypto() {
-        const iv = randomBytes(16);
-        const key = (await promisify(scrypt)(process.env.JWT_SECRET, 'salt', 32)) as Buffer;
-        this.cipher = createCipheriv('aes-256-ctr', key, iv);
-        this.decipher = createDecipheriv('aes-256-ctr', key, iv);
-    }
-
     async encrypt_text(plain_text: string): Promise<string> {
-        const iv = randomBytes(16);
-        const key = scryptSync(process.env.JWT_SECRET, 'salt', 32);
-        const cipher = createCipheriv('aes-256-ctr', Buffer.from("ABC"), iv);
-        const encrypted_text = Buffer.concat([
-            cipher.update(plain_text, 'utf8'),
+        const cipher = createCipheriv('aes-256-ctr', this.key, this.iv);
+        return Buffer.concat([
+            cipher.update(plain_text),
             cipher.final(),
         ]).toString('base64');
-
-        return encrypted_text;
     }
 
-    async decrypt_text(encrypted_text: string): Promise<string> {
-        const iv = randomBytes(16);
-        const key = scryptSync(process.env.JWT_SECRET, 'salt', 32);
-        const decipher = createDecipheriv('aes-256-ctr', key, iv);
 
-        const plain_text = Buffer.concat([
+    async decrypt_text(encrypted_text: string): Promise<string> {
+        const decipher = createDecipheriv('aes-256-ctr', this.key, this.iv);
+        return Buffer.concat([
             decipher.update(encrypted_text, 'base64'),
             decipher.final(),
-        ]).toString('utf8');
-        return plain_text;
+        ]).toString();
     }
 }

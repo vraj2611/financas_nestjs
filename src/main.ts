@@ -1,21 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as process from 'process';
 import helmet from 'helmet';
-import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-
-export async function setEnvVariables() {
-    const variables: string[] = ['LOGGING_PROVIDER_PORT', 'LOGGING_PROVIDER_HOST', 'JWT_SECRET'];
-    const client = new SecretManagerServiceClient();
-    for (const v of variables) {
-        const secretpath = `projects/${process.env.GOOGLE_CLOUD_PROJECT}/secrets/${v}/versions/1`;
-        const [version] = await client.accessSecretVersion({ name: secretpath });
-        process.env[v] = version.payload.data.toString();
-    }
-    console.log("Setting enviroment variables...");
-}
+import { setEnvVariables } from './gcp.envs';
 
 export async function createSwagger(app){
     const config = new DocumentBuilder()
@@ -25,7 +13,7 @@ export async function createSwagger(app){
     .build();
     
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('swagger', app, document);
 }
 
 async function bootstrap() {

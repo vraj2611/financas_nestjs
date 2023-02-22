@@ -16,19 +16,11 @@ export class AppController {
         return {message:'Welcome to Finance API', time: new Date()}
     }
 
-    @Public()
-    @Get('crypt/:txt')
-    async crypt(@Param('txt') txt:string) {
-        const enc = await this.serv.encrypt_text(txt);
-        const dec = await this.serv.decrypt_text(enc);
-        return {enc, dec}
-    }
-
     @Throttle(1, 2)
     @Public()
     @UseGuards(LocalGuard)
     @Post('login')
-    async login(@Req() req) {
+    async login(@Req() req, @Body() dto) {
             return this.serv.createJwt({ id: req.user.id })
     }
 
