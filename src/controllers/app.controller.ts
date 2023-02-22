@@ -16,16 +16,18 @@ export class AppController {
         return {message:'Welcome to Finance API', time: new Date()}
     }
 
-    @Throttle(1, 5)
+    @Throttle(1, 2)
     @Public()
     @UseGuards(LocalGuard)
     @Post('login')
     async login(@Req() req) {
-        try {
             return this.serv.createJwt({ id: req.user.id })
-        } catch (error) {
-            return error;
-        }
+    }
+
+    @Throttle(1, 2)
+    @Get('refresh_token')
+    async renewToken(@Req() req) {
+        return this.serv.createJwt({ id: req.user.id })
     }
 
 }

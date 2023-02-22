@@ -28,22 +28,24 @@ export class DatastoreRepository implements IRepository {
     }
 
     async create(data: Object): Promise<any> {
-        return await this.ds.save({
-            key: this.ds.key(this.kind),
+        const key = this.ds.key(this.kind);
+        await this.ds.save({
+            key: key,
             excludefromIndexes: this.excludefromIndexes,
             data: data
         });
+        return this.get(key.id);
     }
 
     async update(data:Object){
-        const id = data['id'];
-        const key = this.ds.key([this.kind, +id]);
+        const key = this.ds.key([this.kind, +data['id']]);
         delete data['id'];
-        return this.ds.save({
+        await this.ds.save({
             key: key,
             excludefromIndexes: this.excludefromIndexes,
             data: data 
         });
+        return this.get(key.id);
     }
 
     async delete(id: string) {

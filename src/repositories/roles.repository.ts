@@ -5,6 +5,6 @@ import { Injectable } from "@nestjs/common";
 export class RoleRepository extends DatastoreRepository {
 
     constructor(){
-        super('Role', [])
+        super('Roles', [])
     }
 }

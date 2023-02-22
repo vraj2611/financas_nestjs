@@ -1,16 +1,18 @@
-import { Injectable, BadRequestException, ConsoleLogger } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { IUser } from 'src/models/user.class';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { UserRepository } from 'src/repositories/users.repository';
 import { RoleRepository } from 'src/repositories/roles.repository';
 import { UpdateUserDto } from 'src/dtos/updateUserDto';
+import { SecurityService } from 'src/security/security.service';
 
 @Injectable()
 export class UsersService {
 
     constructor(
         private repo: UserRepository,
-        private rolerepo: RoleRepository) { }
+        private rolerepo: RoleRepository
+    ) { }
 
     async createUser(dto: CreateUserDto): Promise<IUser> {
 
@@ -19,8 +21,8 @@ export class UsersService {
 
         dto.created_at = Date.now();
         const res = await this.repo.create(dto);
-        console.log(res);
-        return;
+        delete res.password;
+        return res;
     }
 
     async get(id: string): Promise<any> {
@@ -53,8 +55,17 @@ export class UsersService {
 
     async deleteUser(id: string) {
         const user = await this.get(id);
-        user.name = "Deleted";
-        return this.updateUser(user);
+        return this.repo.update(this.anonymizeUser(user));
+    }
+
+    private anonymizeUser(user: IUser){
+        user.password = "****";
+        user.name = "deleted_" + user.id;
+        user.email = "****@" + user.email.split("@")[1]
+        user.phone = user.phone.substring(0, user.phone.length - 6) + "******"
+        user.creditcard = user.creditcard.substring(0, user.creditcard.length - 12) + "************"
+        user.deleted_at = Date.now();
+        return user;
     }
 
 }

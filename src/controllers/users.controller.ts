@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, HttpException, HttpStatus, Put, Delete, Patch, Param, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Delete, Param, Req } from '@nestjs/common';
 import { UsersService } from 'src/services/users.service';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { SecurityService } from 'src/security/security.service';
 import { Public } from 'src/security/jwt.guard';
 import { UpdateUserDto } from 'src/dtos/updateUserDto';
+import { Roles } from 'src/security/roles.guard';
+import { Role } from 'src/models/role.enum';
 
 @Controller('users')
 export class UsersController {
@@ -15,33 +17,26 @@ export class UsersController {
     @Public()
     @Post()
     async createUser(@Body() dto: CreateUserDto) {
-        try {
-            dto.password = await this.secServ.hashPassword(dto.password);
-            return await this.serv.createUser(dto);
-        } catch (error) {
-            console.log(error);
-            return error;
-        }
+        dto.password = await this.secServ.hashPassword(dto.password);
+        return await this.serv.createUser(dto);
     }
 
-    @Public()
     @Get()
     async listUsers() {
         return await this.serv.listUsers();
     }
 
-    @Public()
+    @Get('me')
+    async myprofile(@Req() req) {
+        return this.serv.get(req.user.id);
+    }
+
+    @Roles(Role.Owner)
     @Get(":id")
     async getUser(@Param('id') id: string) {
         return this.serv.get(id);
     }
 
-    @Get('me')
-    async myprofile() {
-        return await this.serv.listUsers();
-    }
-
-    @Public()
     @Put(":id")
     async updateUser(
         @Param('id') id: string,

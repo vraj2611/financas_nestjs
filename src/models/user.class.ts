@@ -6,6 +6,8 @@ export interface IUser {
     creditcard:string;
     phone:string;
     roles?:any[];
+    created_at?:number;
+    deleted_at?:number;
 }
 
 export class User {
