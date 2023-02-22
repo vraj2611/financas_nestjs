@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Get, Body, Req } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Body, Req, Param } from '@nestjs/common';
 import { SecurityService } from '../security/security.service';
 import { LocalGuard } from '../security/local.strategy';
 import { Public } from 'src/security/jwt.guard';
@@ -14,6 +14,14 @@ export class AppController {
     @Get()
     welcome() {
         return {message:'Welcome to Finance API', time: new Date()}
+    }
+
+    @Public()
+    @Get('crypt/:txt')
+    async crypt(@Param('txt') txt:string) {
+        const enc = await this.serv.encrypt_text(txt);
+        const dec = await this.serv.decrypt_text(enc);
+        return {enc, dec}
     }
 
     @Throttle(1, 2)

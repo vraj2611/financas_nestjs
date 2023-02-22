@@ -17,6 +17,7 @@ export class UsersController {
     @Public()
     @Post()
     async createUser(@Body() dto: CreateUserDto) {
+        dto = await this.secServ.encrypt_object(dto, ['creditcard']);
         dto.password = await this.secServ.hashPassword(dto.password);
         return await this.serv.createUser(dto);
     }
@@ -28,7 +29,8 @@ export class UsersController {
 
     @Get('me')
     async myprofile(@Req() req) {
-        return this.serv.get(req.user.id);
+        const user = await this.serv.get(req.user.id);
+        return this.secServ.decrypt_object(user, ['creditcard']);
     }
 
     @Roles(Role.Owner)
