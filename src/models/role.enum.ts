@@ -5,3 +5,9 @@ export enum Role {
     Planner = "PLANNER",
     Executer = "EXECUTER"
 }
+
+export class FullRole {
+    user_id: string;
+    role: Role;
+    project_id: string;
+}

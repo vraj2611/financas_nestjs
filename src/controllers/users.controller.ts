@@ -4,7 +4,7 @@ import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { SecurityService } from 'src/security/security.service';
 import { Public } from 'src/security/jwt.guard';
 import { UpdateUserDto } from 'src/dtos/updateUserDto';
-import { Roles } from 'src/security/roles.guard';
+import { Roles } from 'src/security/permission.guard';
 import { Role } from 'src/models/role.enum';
 
 @Controller('users')

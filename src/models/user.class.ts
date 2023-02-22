@@ -2,7 +2,7 @@ export interface IUser {
     email:string;
     name:string;
     password?:string;
-    id?:number;    
+    id?:string;    
     creditcard:string;
     phone:string;
     roles?:any[];
@@ -16,7 +16,7 @@ export class User {
     password:string;
     creditcard:string;
     phone:string;
-    id:number;
+    id:string;
 
     constructor(info:IUser){
         for (const k in info) this[k] = info[k]

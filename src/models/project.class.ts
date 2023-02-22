@@ -2,6 +2,7 @@ import { Cost, TypeCost, ICost } from "./cost.class";
 import { User, IUser } from "./user.class";
 
 export interface IProject {
+    id?:string;
     name: string;
     description: string;
     costs: ICost[] | Cost[];

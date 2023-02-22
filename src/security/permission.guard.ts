@@ -5,7 +5,7 @@ import { Role } from 'src/models/role.enum';
 export const Roles = (...roles: Role[]) => SetMetadata('roles', roles);
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class PermissionGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {

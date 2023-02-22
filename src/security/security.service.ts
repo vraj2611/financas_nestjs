@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from "argon2";
-import { createCipheriv, createDecipheriv, scryptSync, Cipher, Decipher } from 'crypto';
+import { createCipheriv, createDecipheriv, scryptSync } from 'crypto';
 
 @Injectable()
 export class SecurityService {
@@ -55,7 +55,6 @@ export class SecurityService {
         ]).toString('base64');
     }
 
-
     async decrypt_text(encrypted_text: string): Promise<string> {
         const decipher = createDecipheriv('aes-256-ctr', this.key, this.iv);
         return Buffer.concat([
@@ -63,4 +62,5 @@ export class SecurityService {
             decipher.final(),
         ]).toString();
     }
+
 }
