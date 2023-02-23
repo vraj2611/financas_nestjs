@@ -1,9 +1,8 @@
 import { Controller, Post, UseGuards, Get, Body, Req, Param } from '@nestjs/common';
 import { SecurityService } from '../security/security.service';
-import { LocalGuard } from '../security/local.strategy';
-import { Public } from 'src/security/jwt.guard';
 import { Throttle } from '@nestjs/throttler';
-import { LoginUserDto } from 'src/dtos/loginUserDto.class';
+import { Public } from 'src/security/public.decorator';
+import { LocalGuard } from 'src/security/local.guard';
 
 @Controller()
 export class AppController {

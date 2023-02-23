@@ -1,22 +1,21 @@
-import { Injectable, CanActivate, ExecutionContext, SetMetadata } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Role } from 'src/models/role.enum';
-
-export const Roles = (...roles: Role[]) => SetMetadata('roles', roles);
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common"
+import { PermissionStrategy } from "./permission.strategy"
+import { Reflector } from "@nestjs/core"
+import { isPublicRoute } from "./public.decorator"
+import { isNoRestriction, routePermission } from "./permission.decorator"
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
-    console.log({req});
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    if (!roles) {
-      return true;
+    constructor(private strategy: PermissionStrategy, private reflector: Reflector) { }
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        if (isPublicRoute(this.reflector, context)) return true
+        if (isNoRestriction(this.reflector, context)) return true
+
+        const req = context.switchToHttp().getRequest();
+        const permission = routePermission(this.reflector, context)
+        
+        return this.strategy.validate(req, permission);
     }
-    
-    const user = req.user;
-    return true;
-  }
 }

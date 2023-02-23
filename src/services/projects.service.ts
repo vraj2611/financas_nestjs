@@ -3,7 +3,7 @@ import { CreateProjectDto } from 'src/dtos/createProjectDto.class';
 import { IProject } from 'src/models/project.class';
 import { ProjectRepository } from 'src/repositories/projects.repository';
 import { RoleRepository } from 'src/repositories/roles.repository';
-import { Role } from 'src/models/role.enum';
+import { Role } from 'src/models/credential.class';
 import { CreateRoleDto } from 'src/dtos/createRoleDto.class';
 
 

@@ -18,6 +18,7 @@ export class User {
     phone:string;
     id:string;
 
+    
     constructor(info:IUser){
         for (const k in info) this[k] = info[k]
     }

@@ -6,9 +6,6 @@ import { UsersService } from 'src/services/users.service';
 import { IUser } from 'src/models/user.class';
 
 @Injectable()
-export class LocalGuard extends AuthGuard('local') {}
-
-@Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(private sserv: SecurityService, private userv: UsersService) {
         super({ usernameField: 'email' })

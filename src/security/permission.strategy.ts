@@ -4,7 +4,8 @@ import { Project } from "src/models/project.class";
 import { Category } from "src/models/category.class";
 import { Cost } from "src/models/cost.class";
 import { User } from "src/models/user.class";
-import { RolesService } from "src/services/roles.service";
+import { CredentialService } from "src/services/roles.service";
+import { Permission } from "./permission.decorator";
 
 export enum Action {
     Manage = 'manage',
@@ -14,21 +15,30 @@ export enum Action {
     Delete = 'delete',
   }
 
-type Subjects = InferSubjects<typeof Project | typeof Category | typeof Cost> | 'all';
-
+export type Subjects = InferSubjects<typeof Project | typeof Category | typeof Cost> | 'all';
 export type AppAbility = Ability<[Action, Subjects]>;
 
 @Injectable()
-export class PermissionService {
+export class PermissionStrategy {
     
-    constructor(private serv: RolesService){}
-    
-    async createForUser(user: User) {
+    constructor(private serv: CredentialService){}
+
+    async validate(req:any, permission: Permission):Promise<boolean>{
+        console.log({ req });
+        const user_ability = await this.userAbility(req.user);
+        const { action, subject } = await this.permissionAbility(permission)
+        return user_ability.can(action, subject);
+    }
+
+    private async permissionAbility(permission: Permission) {
+    }
+
+    private async userAbility(user_id: string) {
         const { can, cannot, build } = new AbilityBuilder<
             Ability<[Action, Subjects]>
         >(Ability as AbilityClass<AppAbility>);
 
-        const roles = await this.serv.listByUser(user.id);
+        const roles = await this.serv.listByUser(user_id);
 
         // for (const r of roles) {
         //     if (r)

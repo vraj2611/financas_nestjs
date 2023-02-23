@@ -1,4 +1,4 @@
-import { Role } from "src/models/role.enum"
+import { Role } from "src/models/credential.class"
 
 export class CreateRoleDto {
     user_id: string;

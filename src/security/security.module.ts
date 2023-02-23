@@ -7,8 +7,10 @@ import { ServicesModule } from 'src/services/services.module';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.estrategy';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtGuard } from './jwt.guard';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { PermissionStrategy } from './permission.strategy';
+import { JwtGuard } from './jwt.guard';
+import { PermissionGuard } from './permission.guard';
 
 @Module({
     imports: [
@@ -23,8 +25,10 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
         LoggingService,
         LocalStrategy,
         JwtStrategy,
+        PermissionStrategy,
         { provide: APP_GUARD, useClass: ThrottlerGuard },
-        { provide: APP_GUARD, useClass: JwtGuard }
+        { provide: APP_GUARD, useClass: JwtGuard },
+        { provide: APP_GUARD, useClass: PermissionGuard }
     ],
     exports: [SecurityService],
 })

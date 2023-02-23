@@ -6,7 +6,7 @@ export enum Role {
     Executer = "EXECUTER"
 }
 
-export class FullRole {
+export class Credential {
     user_id: string;
     role: Role;
     project_id: string;

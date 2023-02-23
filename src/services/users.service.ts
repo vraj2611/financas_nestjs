@@ -2,16 +2,13 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { IUser } from 'src/models/user.class';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { UserRepository } from 'src/repositories/users.repository';
-import { RoleRepository } from 'src/repositories/roles.repository';
 import { UpdateUserDto } from 'src/dtos/updateUserDto';
-import { SecurityService } from 'src/security/security.service';
 
 @Injectable()
 export class UsersService {
 
     constructor(
-        private repo: UserRepository,
-        private rolerepo: RoleRepository
+        private repo: UserRepository
     ) { }
 
     async createUser(dto: CreateUserDto): Promise<IUser> {
@@ -35,11 +32,6 @@ export class UsersService {
 
     async updateUser(dto: UpdateUserDto) {
         return this.repo.update(dto);
-    }
-
-    async getUserRoles(email: string) {
-        const user = await this.getByEmail(email);
-        user.roles = await this.rolerepo.listBy('user', email);
     }
 
     async listUsers(): Promise<any[]> {

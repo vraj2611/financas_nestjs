@@ -2,10 +2,9 @@ import { Controller, Get, Post, Body, Put, Delete, Param, Req } from '@nestjs/co
 import { UsersService } from 'src/services/users.service';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { SecurityService } from 'src/security/security.service';
-import { Public } from 'src/security/jwt.guard';
 import { UpdateUserDto } from 'src/dtos/updateUserDto';
-import { Roles } from 'src/security/permission.guard';
-import { Role } from 'src/models/role.enum';
+import { Public } from 'src/security/public.decorator';
+import { Permission, RequirePermission, NoRestriction } from 'src/security/permission.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -22,23 +21,19 @@ export class UsersController {
         return await this.serv.createUser(dto);
     }
 
+    @RequirePermission(Permission.MANAGE_ALL)
     @Get()
     async listUsers() {
         return await this.serv.listUsers();
     }
 
-    @Get('me')
-    async myprofile(@Req() req) {
-        const user = await this.serv.get(req.user.id);
-        return this.secServ.decrypt_object(user, ['creditcard']);
-    }
-
-    @Roles(Role.Owner)
+    @RequirePermission(Permission.MANAGE_ALL)
     @Get(":id")
     async getUser(@Param('id') id: string) {
         return this.serv.get(id);
     }
 
+    @RequirePermission(Permission.MANAGE_ALL)
     @Put(":id")
     async updateUser(
         @Param('id') id: string,
@@ -48,10 +43,16 @@ export class UsersController {
         return await this.serv.updateUser(dto);
     }
 
-    @Public()
+    @RequirePermission(Permission.MANAGE_ALL)
     @Delete(":id")
     async deleteUser(@Param('id') id: string) {
         return await this.serv.deleteUser(id);
     }
 
+    @NoRestriction()
+    @Get('me')
+    async myprofile(@Req() req) {
+        const user = await this.serv.get(req.user.id);
+        return this.secServ.decrypt_object(user, ['creditcard']);
+    }
 }
