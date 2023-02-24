@@ -76,4 +76,5 @@ export class DatastoreRepository implements IRepository {
         entity.id = entity[this.ds.KEY].id
         return entity
     }
+
 }

@@ -19,7 +19,7 @@ export class CreateUserDto {
     @ApiProperty()
     creditcard: string;
     
-    @Length(9)
+    //@Length(9)
     @ApiProperty()
     phone: string;
 

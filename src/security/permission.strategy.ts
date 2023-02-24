@@ -30,7 +30,8 @@ export class PermissionStrategy {
         return user_ability.can(action, subject);
     }
 
-    private async permissionAbility(permission: Permission) {
+    private async permissionAbility(permission: Permission):Promise<{action:Action, subject:any}> {
+        return null
     }
 
     private async userAbility(user_id: string) {

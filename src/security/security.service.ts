@@ -35,19 +35,19 @@ export class SecurityService {
 
     async encrypt_object<T>(obj: T, fields: string[]): Promise<T> {
         for (const key of fields) {
-            obj[key] = await this.encrypt_text(obj[key]);
+            obj[key] = await this.encrypt(obj[key]);
         }
         return obj;
     }
 
     async decrypt_object<T>(obj: T, fields: string[]): Promise<T> {
         for (const key of fields) {
-            obj[key] = await this.decrypt_text(obj[key]);
+            obj[key] = await this.decrypt(obj[key]);
         }
         return obj;
     }
 
-    async encrypt_text(plain_text: string): Promise<string> {
+    async encrypt(plain_text: string): Promise<string> {
         const cipher = createCipheriv('aes-256-ctr', this.key, this.iv);
         return Buffer.concat([
             cipher.update(plain_text),
@@ -55,7 +55,7 @@ export class SecurityService {
         ]).toString('base64');
     }
 
-    async decrypt_text(encrypted_text: string): Promise<string> {
+    async decrypt(encrypted_text: string): Promise<string> {
         const decipher = createDecipheriv('aes-256-ctr', this.key, this.iv);
         return Buffer.concat([
             decipher.update(encrypted_text, 'base64'),

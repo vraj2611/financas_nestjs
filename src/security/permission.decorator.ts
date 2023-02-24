@@ -18,12 +18,11 @@ export function routePermission(reflector: Reflector, context: ExecutionContext)
     ]);
 }
 
-export const NoRestriction = () => SetMetadata('NO_RESTRICTION', true);
+export const DoNotRequirePermission = () => SetMetadata('DO_NOT_REQUIRE', true);
 
-export function isNoRestriction(reflector: Reflector, context: ExecutionContext): boolean {
-    return reflector.getAllAndOverride<boolean>('NO_RESTRICTION', [
+export function doNotRequirePermission(reflector: Reflector, context: ExecutionContext): boolean {
+    return reflector.getAllAndOverride<boolean>('DO_NOT_REQUIRE', [
         context.getHandler(),
         context.getClass(),
     ]);
 }
-

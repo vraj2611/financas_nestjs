@@ -4,7 +4,7 @@ import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { SecurityService } from 'src/security/security.service';
 import { UpdateUserDto } from 'src/dtos/updateUserDto';
 import { Public } from 'src/security/public.decorator';
-import { Permission, RequirePermission, NoRestriction } from 'src/security/permission.decorator';
+import { Permission, RequirePermission, DoNotRequirePermission } from 'src/security/permission.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -21,7 +21,7 @@ export class UsersController {
         return await this.serv.createUser(dto);
     }
 
-    @RequirePermission(Permission.MANAGE_ALL)
+    @DoNotRequirePermission()
     @Get()
     async listUsers() {
         return await this.serv.listUsers();
@@ -49,10 +49,11 @@ export class UsersController {
         return await this.serv.deleteUser(id);
     }
 
-    @NoRestriction()
-    @Get('me')
-    async myprofile(@Req() req) {
-        const user = await this.serv.get(req.user.id);
-        return this.secServ.decrypt_object(user, ['creditcard']);
+    @RequirePermission(Permission.MANAGE_ALL)
+    @Get("/me")
+    async myprofile() {
+        return "zz"
+        //const user = await this.serv.get(req.user.id);
+        //return this.secServ.decrypt_object(user, ['creditcard']);
     }
 }

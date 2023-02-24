@@ -86,6 +86,7 @@ describe('Users Tests', () => {
             .set('Accept', 'application/json')
             .set('Authtoken', token);
 
+        showError(res)
         expect(res.status).toBe(200);
     });
 
@@ -151,3 +152,9 @@ describe('Users Tests', () => {
     });
 
 });
+
+function showError(res){
+    if (res.status >= 400) {
+        console.log({ status: res.status, body: res.body })
+    }
+}

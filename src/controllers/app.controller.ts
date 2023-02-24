@@ -3,6 +3,7 @@ import { SecurityService } from '../security/security.service';
 import { Throttle } from '@nestjs/throttler';
 import { Public } from 'src/security/public.decorator';
 import { LocalGuard } from 'src/security/local.guard';
+import { DoNotRequirePermission } from 'src/security/permission.decorator';
 
 @Controller()
 export class AppController {
@@ -24,9 +25,14 @@ export class AppController {
     }
 
     @Throttle(1, 2)
+    @DoNotRequirePermission()
     @Get('refresh_token')
     async renewToken(@Req() req) {
         return this.serv.createJwt({ id: req.user.id })
     }
 
+    @Get('insecure')
+    insecureRoute(){
+        return "ok"
+    }
 }

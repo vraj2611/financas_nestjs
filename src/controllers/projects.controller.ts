@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, HttpException, HttpStatus, Req, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ProjectsService } from 'src/services/projects.service';
 import { CreateProjectDto } from 'src/dtos/createProjectDto.class';
-import { NoRestriction, RequirePermission, Permission } from 'src/security/permission.decorator';
+import { RequirePermission, Permission, DoNotRequirePermission } from 'src/security/permission.decorator';
 
 @Controller('projects')
 export class ProjectsController {
@@ -20,7 +20,7 @@ export class ProjectsController {
         return await this.serv.listProjects();
     }
 
-    @NoRestriction()
+    @DoNotRequirePermission()
     @Post()
     async createProject(@Req() req: Request, @Body() dto: CreateProjectDto) {
         try {
