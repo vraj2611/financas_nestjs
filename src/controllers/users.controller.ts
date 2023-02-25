@@ -22,6 +22,13 @@ export class UsersController {
     }
 
     @DoNotRequirePermission()
+    @Get("/myprofile")
+    async myprofile(@Req() req) {
+        const user = await this.serv.get(req.user.id);
+        return this.secServ.decrypt_object(user, ['creditcard']);
+    }
+
+    @DoNotRequirePermission()
     @Get()
     async listUsers() {
         return await this.serv.listUsers();
@@ -49,11 +56,5 @@ export class UsersController {
         return await this.serv.deleteUser(id);
     }
 
-    @RequirePermission(Permission.MANAGE_ALL)
-    @Get("/me")
-    async myprofile() {
-        return "zz"
-        //const user = await this.serv.get(req.user.id);
-        //return this.secServ.decrypt_object(user, ['creditcard']);
-    }
+
 }

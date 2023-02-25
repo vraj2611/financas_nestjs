@@ -24,7 +24,7 @@ export class PermissionStrategy {
     constructor(private serv: CredentialService){}
 
     async validate(req:any, permission: Permission):Promise<boolean>{
-        console.log({ req });
+        //console.log({ req });
         const user_ability = await this.userAbility(req.user);
         const { action, subject } = await this.permissionAbility(permission)
         return user_ability.can(action, subject);

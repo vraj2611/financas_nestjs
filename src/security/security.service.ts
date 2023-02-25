@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from "argon2";
 import { createCipheriv, createDecipheriv, scryptSync } from 'crypto';
@@ -16,9 +16,18 @@ export class SecurityService {
         this.key = scryptSync(process.env.JWT_SECRET, 'salt', 32);
     }
 
-
     hashPassword(password: string) {
+        this.validatePasswordStrength(password);
         return argon2.hash(password);
+    }
+
+    validatePasswordStrength(password: string){
+        console.log({password});
+        if (password.length < 8) throw new BadRequestException("Password should has at least 8 characters")
+        if (!/[a-z]/.test(password)) throw new BadRequestException("Password should has some lowercase character")
+        if (!/[A-Z]/.test(password)) throw new BadRequestException("Password should has some uppercase character")
+        if (!/[0-9]/.test(password)) throw new BadRequestException("Password should has some number character")
+        if (!/\W/.test(password)) throw new BadRequestException("Password should has some special character")
     }
 
     verifyPassword(hash: string, plain: string) {

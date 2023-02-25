@@ -1,6 +1,12 @@
 import * as request from 'supertest';
 import * as casual from 'casual';
 
+function show(res){
+    if (res.status >= 400) {
+        console.log({ status: res.status, body: res.body })
+    }
+}
+
 describe('Users Tests', () => {
     let server: request.SuperTest<request.Test>
     let token: string;
@@ -25,13 +31,24 @@ describe('Users Tests', () => {
         expect(res.status).toBe(200);
     });
 
+    it('error create User by weak password', async () => {
+        test_user = casual['user'];
+        const res = await server.post('/users')
+            .send(test_user)
+            .set('Accept', 'application/json')
+        show(res)
+        expect(res.status).toBe(400);
+    });
+
+
     it('create User', async () => {
         test_user = casual['user'];
+        test_user['password'] = 'Az1!@#' + test_user['password']
         console.log({test_user});
         const res = await server.post('/users')
             .send(test_user)
             .set('Accept', 'application/json')
-
+        show(res)
         test_user['id'] = res.body.id;
         expect(res.status).toBe(201);
     });
@@ -86,7 +103,7 @@ describe('Users Tests', () => {
             .set('Accept', 'application/json')
             .set('Authtoken', token);
 
-        showError(res)
+        show(res)
         expect(res.status).toBe(200);
     });
 
@@ -124,7 +141,7 @@ describe('Users Tests', () => {
     });
 
     it('get user own profile', async () => {
-        const res = await server.get('/users/me')
+        const res = await server.get('/users/myprofile')
             .set('Accept', 'application/json')
             .set('Authtoken', token);
 
@@ -152,9 +169,3 @@ describe('Users Tests', () => {
     });
 
 });
-
-function showError(res){
-    if (res.status >= 400) {
-        console.log({ status: res.status, body: res.body })
-    }
-}

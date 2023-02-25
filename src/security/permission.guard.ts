@@ -12,16 +12,14 @@ export class PermissionGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         if (isPublicRoute(this.reflector, context)) return true
         if (doNotRequirePermission(this.reflector, context)) return true
+        
         const req = context.switchToHttp().getRequest();
-        console.log(req['user']);
         const permission = routePermission(this.reflector, context);
+        
         if (!permission) {
             console.error("Missing Permission at Route " + req.method + " " + req.url)
             throw new InternalServerErrorException
         }
-        return true;
-        
-        
         
         return this.strategy.validate(req, permission);
     }
