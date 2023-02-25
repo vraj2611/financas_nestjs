@@ -24,11 +24,12 @@ export class PermissionStrategy {
     constructor(private serv: CredentialService){}
 
     async validate(req:any, permission: Permission):Promise<boolean>{
-        return true;
+     
         //console.log({ req });
         const user_ability = await this.userAbility(req.user);
         const { action, subject } = await this.permissionAbility(permission)
         return user_ability.can(action, subject);
+        return true;
     }
 
     private async permissionAbility(permission: Permission):Promise<{action:Action, subject:any}> {

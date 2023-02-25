@@ -22,6 +22,7 @@ export class Cost {
     date: Date;
     type: TypeCost;
     createdBy: User;
+    aproved: boolean;
 
     constructor(info: ICost) {
         if (info.value < 0) throw new Error("value cost is negative")

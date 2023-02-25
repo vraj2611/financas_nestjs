@@ -45,18 +45,9 @@ export class UsersService {
     }
 
     async deleteUser(id: string) {
-        const user = await this.get(id);
-        return this.repo.update(this.anonymizeUser(user));
-    }
-
-    private anonymizeUser(user: IUser){
-        user.password = "****";
-        user.name = "deleted_" + user.id;
-        user.email = "****@" + user.email.split("@")[1]
-        user.phone = user.phone.substring(0, user.phone.length - 6) + "******"
-        user.creditcard = user.creditcard.substring(0, user.creditcard.length - 12) + "************"
-        user.deleted_at = Date.now();
-        return user;
+        const user:User = await this.get(id);
+        user.anonymize();
+        return this.repo.update(user);
     }
 
 }

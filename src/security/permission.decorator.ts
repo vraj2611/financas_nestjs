@@ -2,11 +2,12 @@ import { SetMetadata, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
 export enum Permission {
-    MANAGE_ALL = 'MANAGE_ALL',
-    UPDATE_PROJECT = 'UPDATE_PROJECT',
-    CREATE_PAID_COST = 'CREATE_PAID_COST',
-    CREATE_PLANNED_COST = 'CREATE_PLANNED_COST',
-    UPDATE_COST = 'UPDATE_COST'
+    SYSTEM_ADMIN = 'SYSTEM_ADMIN',
+    SYSTEM_AUDITOR = 'SYSTEM_AUDITOR',
+    PROJECT_OWNER = 'PROJECT_OWNER',
+    PROJECT_AUDITOR = 'PROJECT_AUDITOR',
+    PROJECT_PLANNER = 'PROJECT_PLANNER',
+    PROJECT_CONTRACTOR = 'PROJECT_CONTRACTOR'
 }
 
 export const RequirePermission = (permission: Permission) => SetMetadata('PERMISSION', permission);

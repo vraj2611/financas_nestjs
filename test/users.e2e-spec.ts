@@ -36,7 +36,6 @@ describe('Users Tests', () => {
         const res = await server.post('/users')
             .send(test_user)
             .set('Accept', 'application/json')
-        show(res)
         expect(res.status).toBe(400);
     });
 

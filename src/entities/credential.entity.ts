@@ -3,10 +3,10 @@ import { Project } from "./project.entity";
 
 export enum Role {
     Admin = "ADMIN",
-    Audit = "AUDIT",
+    Auditor = "AUDITOR",
     Owner = "OWNER",
     Planner = "PLANNER",
-    Executer = "EXECUTER"
+    Contractor = "CONTARCTOR"
 }
 
 export class Credential {
