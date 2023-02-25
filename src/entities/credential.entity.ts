@@ -1,3 +1,6 @@
+import { User } from "./user.entity";
+import { Project } from "./project.entity";
+
 export enum Role {
     Admin = "ADMIN",
     Audit = "AUDIT",
@@ -7,7 +10,7 @@ export enum Role {
 }
 
 export class Credential {
-    user_id: string;
+    user: User;
     role: Role;
-    project_id: string;
+    project: Project;
 }

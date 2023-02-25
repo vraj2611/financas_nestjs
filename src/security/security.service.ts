@@ -22,7 +22,6 @@ export class SecurityService {
     }
 
     validatePasswordStrength(password: string){
-        console.log({password});
         if (password.length < 8) throw new BadRequestException("Password should has at least 8 characters")
         if (!/[a-z]/.test(password)) throw new BadRequestException("Password should has some lowercase character")
         if (!/[A-Z]/.test(password)) throw new BadRequestException("Password should has some uppercase character")

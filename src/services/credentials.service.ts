@@ -1,7 +1,7 @@
 import { RoleRepository } from "src/repositories/roles.repository";
 import { CreateRoleDto } from "src/dtos/createRoleDto.class";
 import { Injectable } from "@nestjs/common";
-import { Role } from "src/models/credential.class";
+import { Role } from "src/entities/credential.entity";
 
 @Injectable()
 export class CredentialService {

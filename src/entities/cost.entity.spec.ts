@@ -1,7 +1,7 @@
 import { describe, expect, test, afterAll } from '@jest/globals';
-import { ICost, Cost, TypeCost } from './cost.class';
-import { User } from './user.class';
-import { Category } from './category.class';
+import { ICost, Cost, TypeCost } from './cost.entity';
+import { User } from './user.entity';
+import { Category } from './category.entity';
 
 describe('Model Cost', () => {
     beforeAll(async () => {

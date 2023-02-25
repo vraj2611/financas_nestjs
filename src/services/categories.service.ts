@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from 'src/dtos/createCategoryDto.class';
-import { ICategory } from 'src/models/category.class';
+import { ICategory } from 'src/entities/category.entity';
 import { CostRepository } from 'src/repositories/costs.repository';
 
 @Injectable()

@@ -1,8 +1,8 @@
 import { describe, expect, test, afterAll } from '@jest/globals';
-import { User } from './user.class';
-import { Cost, TypeCost } from './cost.class';
-import { Category } from './category.class';
-import { Project } from './project.class';
+import { User } from './user.entity';
+import { Cost, TypeCost } from './cost.entity';
+import { Category } from './category.entity';
+import { Project } from './project.entity';
 
 describe('Model Project', () => {
     let users: Map<string, User>;

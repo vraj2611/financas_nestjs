@@ -9,8 +9,8 @@ export class Category {
     name: string;
     description: string;
 
-    constructor(info:ICategory){
-        for (const k in info) this[k] = info[k]
+    constructor(partial: Partial<Category>) {
+        Object.assign(this, partial);
     }
 
 }

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from 'src/dtos/createProjectDto.class';
-import { IProject } from 'src/models/project.class';
+import { IProject } from 'src/entities/project.entity';
 import { ProjectRepository } from 'src/repositories/projects.repository';
 import { RoleRepository } from 'src/repositories/roles.repository';
-import { Role } from 'src/models/credential.class';
+import { Role } from 'src/entities/credential.entity';
 import { CreateRoleDto } from 'src/dtos/createRoleDto.class';
 
 

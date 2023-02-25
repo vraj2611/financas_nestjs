@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { IUser } from 'src/models/user.class';
+import { IUser, User } from 'src/entities/user.entity';
 import { CreateUserDto } from 'src/dtos/createUserDto.class';
 import { UserRepository } from 'src/repositories/users.repository';
 import { UpdateUserDto } from 'src/dtos/updateUserDto';
@@ -11,18 +11,17 @@ export class UsersService {
         private repo: UserRepository
     ) { }
 
-    async createUser(dto: CreateUserDto): Promise<IUser> {
+    async createUser(dto: CreateUserDto): Promise<User> {
 
         const user = await this.getByEmail(dto.email);
         if (user) throw new BadRequestException("email already exists");
 
         dto.created_at = Date.now();
         const res = await this.repo.create(dto);
-        delete res.password;
         return res;
     }
 
-    async get(id: string): Promise<any> {
+    async get(id: string): Promise<User> {
         return this.repo.get(id);
     }
 

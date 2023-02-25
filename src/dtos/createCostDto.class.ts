@@ -1,4 +1,4 @@
-import { TypeCost } from "src/models/cost.class";
+import { TypeCost } from "src/entities/cost.entity";
 
 export class CreateCostDto {
     value: number;

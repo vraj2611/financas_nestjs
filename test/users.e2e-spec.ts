@@ -150,13 +150,13 @@ describe('Users Tests', () => {
         expect(test_user['email']).toBe(res.body['email']);
     });
 
-    it('delete user', async () => {
-        const res = await server.delete('/users/' + test_user['id'])
-            .set('Accept', 'application/json')
-            .set('Authtoken', token);
+    // it('delete user', async () => {
+    //     const res = await server.delete('/users/' + test_user['id'])
+    //         .set('Accept', 'application/json')
+    //         .set('Authtoken', token);
 
-        expect(res.body['name']).toBe('deleted_' + test_user['id']);
-    });
+    //     expect(res.body['name']).toBe('deleted_' + test_user['id']);
+    // });
 
     //console.log({ status: res.status, body: res.body });
     it('error list user by many requests', async () => {

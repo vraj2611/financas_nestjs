@@ -1,5 +1,5 @@
-import { Category, ICategory } from "./category.class";
-import { User, IUser } from "./user.class";
+import { Category, ICategory } from "./category.entity";
+import { User, IUser } from "./user.entity";
 
 export enum TypeCost {
     PLANNED = 0,

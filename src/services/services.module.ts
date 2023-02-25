@@ -4,7 +4,7 @@ import { ProjectsService } from "./projects.service";
 import { CategoriesService } from "./categories.service";
 import { CostsService } from "./costs.service";
 import { RepositoriesModule } from "src/repositories/repositories.module";
-import { CredentialService } from "./roles.service";
+import { CredentialService } from "./credentials.service";
 
 @Module({
     imports: [RepositoriesModule],

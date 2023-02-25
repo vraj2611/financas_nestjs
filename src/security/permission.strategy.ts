@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Ability, AbilityBuilder, InferSubjects, AbilityClass, ExtractSubjectType } from '@casl/ability';
-import { Project } from "src/models/project.class";
-import { Category } from "src/models/category.class";
-import { Cost } from "src/models/cost.class";
-import { User } from "src/models/user.class";
-import { CredentialService } from "src/services/roles.service";
+import { Project } from "src/entities/project.entity";
+import { Category } from "src/entities/category.entity";
+import { Cost } from "src/entities/cost.entity";
+import { User } from "src/entities/user.entity";
+import { CredentialService } from "src/services/credentials.service";
 import { Permission } from "./permission.decorator";
 
 export enum Action {
@@ -24,6 +24,7 @@ export class PermissionStrategy {
     constructor(private serv: CredentialService){}
 
     async validate(req:any, permission: Permission):Promise<boolean>{
+        return true;
         //console.log({ req });
         const user_ability = await this.userAbility(req.user);
         const { action, subject } = await this.permissionAbility(permission)

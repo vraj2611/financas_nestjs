@@ -1,5 +1,5 @@
-import { Cost, TypeCost, ICost } from "./cost.class";
-import { User, IUser } from "./user.class";
+import { Cost, TypeCost, ICost } from "./cost.entity";
+import { User, IUser } from "./user.entity";
 
 export interface IProject {
     id?:string;
@@ -15,6 +15,8 @@ export class Project {
     name: string;
     description: string;
     costs: Cost[];
+    credentials: Credential[];
+    
     private loggedUser: User;
     private owner: User;
     private planners: User[];
