@@ -2,8 +2,8 @@ import { Category, ICategory } from "./category.entity";
 import { User, IUser } from "./user.entity";
 
 export enum TypeCost {
-    PLANNED = 0,
-    PAID = 1
+    PLANNING = 0,
+    EXECUTUION = 1
 }
 
 export interface ICost {
@@ -13,27 +13,24 @@ export interface ICost {
     date: Date;
     type: TypeCost;
     createdBy: IUser | User;
+
 }
 
 export class Cost {
+    id: string;
     value: number;
     category: Category;
     description: string;
     date: Date;
     type: TypeCost;
-    createdBy: User;
-    aproved: boolean;
+    created_by: User;
+    aproved_by: User;
 
-    constructor(info: ICost) {
-        if (info.value < 0) throw new Error("value cost is negative")
-        for (const k in info) {
-            if (k == "category") {
-                this[k] = (info[k].constructor.name == 'Category') ? info[k] : new Category(info[k])
-            } else if (k == "createdBy") {
-                this[k] = (info[k].constructor.name == 'User') ? <User>info[k] : new User(info[k])
-            } else {
-                this[k] = info[k]
-            }
-        }
+    constructor(partial: Partial<Cost>) {
+        Object.assign(this, partial);
     }
+
+    isAproved(){
+        return this.aproved_by != null;
+    } 
 }

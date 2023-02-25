@@ -34,13 +34,13 @@ export class UsersController {
         return await this.serv.listUsers();
     }
 
-    @RequirePermission(Permission.MANAGE_ALL)
+    @RequirePermission(Permission.SYSTEM_ADMIN)
     @Get(":id")
     async getUser(@Param('id') id: string) {
         return this.serv.get(id);
     }
 
-    @RequirePermission(Permission.MANAGE_ALL)
+    @RequirePermission(Permission.SYSTEM_ADMIN)
     @Put(":id")
     async updateUser(
         @Param('id') id: string,
@@ -50,7 +50,7 @@ export class UsersController {
         return await this.serv.updateUser(dto);
     }
 
-    @RequirePermission(Permission.MANAGE_ALL)
+    @RequirePermission(Permission.SYSTEM_ADMIN)
     @Delete(":id")
     async deleteUser(@Param('id') id: string) {
         return await this.serv.deleteUser(id);
