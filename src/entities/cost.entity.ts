@@ -13,7 +13,6 @@ export interface ICost {
     date: Date;
     type: TypeCost;
     createdBy: IUser | User;
-
 }
 
 export class Cost {

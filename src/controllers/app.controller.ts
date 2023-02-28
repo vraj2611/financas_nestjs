@@ -1,9 +1,9 @@
-import { Controller, Post, UseGuards, Get, Body, Req, Param } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Body, Req } from '@nestjs/common';
 import { SecurityService } from '../security/security.service';
 import { Throttle } from '@nestjs/throttler';
 import { Public } from 'src/security/public.decorator';
 import { LocalGuard } from 'src/security/local.guard';
-import { DoNotRequirePermission } from 'src/security/permission.decorator';
+import { DoNotRequireRole } from 'src/security/permission.decorator';
 
 @Controller()
 export class AppController {
@@ -13,7 +13,7 @@ export class AppController {
     @Public()
     @Get()
     welcome() {
-        return {message:'Welcome to Finance API', time: new Date()}
+        return { message: 'Welcome to Finance API', time: new Date() }
     }
 
     @Throttle(1, 2)
@@ -21,18 +21,18 @@ export class AppController {
     @UseGuards(LocalGuard)
     @Post('login')
     async login(@Req() req, @Body() dto) {
-            return this.serv.createJwt({ id: req.user.id })
+        return this.serv.createJwt({ id: req.user.id })
     }
 
     @Throttle(1, 2)
-    @DoNotRequirePermission()
+    @DoNotRequireRole()
     @Get('refresh_token')
     async renewToken(@Req() req) {
         return this.serv.createJwt({ id: req.user.id })
     }
 
     @Get('insecure')
-    insecureRoute(){
+    insecureRoute() {
         return "ok"
     }
 }

@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, HttpException, HttpStatus, Req, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ProjectsService } from 'src/services/projects.service';
 import { CreateProjectDto } from 'src/dtos/createProjectDto.class';
-import { RequirePermission, Permission, DoNotRequirePermission } from 'src/security/permission.decorator';
+import { DoNotRequireRole, RequireRole } from 'src/security/permission.decorator';
+import { Role } from 'src/entities/credential.entity';
 
 @Controller('projects')
 export class ProjectsController {
@@ -20,7 +21,7 @@ export class ProjectsController {
         return await this.serv.listProjects();
     }
 
-    @DoNotRequirePermission()
+    @DoNotRequireRole()
     @Post()
     async createProject(@Req() req: Request, @Body() dto: CreateProjectDto) {
         try {
@@ -31,31 +32,31 @@ export class ProjectsController {
         }
     }
 
-    @RequirePermission(Permission.UPDATE_PROJECT)
+    @RequireRole(Role.Owner)
     @Patch(":id")
     async updateProject() {
 
     }
 
-    @RequirePermission(Permission.UPDATE_PROJECT)
+    @RequireRole(Role.Owner)
     @Post(":id/planner")
     async includePlanner() {
 
     }
 
-    @RequirePermission(Permission.UPDATE_PROJECT)
+    @RequireRole(Role.Owner)
     @Delete(":id/planner")
     async deletePlanner() {
 
     }
 
-    @RequirePermission(Permission.UPDATE_PROJECT)
+    @RequireRole(Role.Owner)
     @Post(":id/executer")
     async includeExecuter() {
 
     }
 
-    @RequirePermission(Permission.UPDATE_PROJECT)
+    @RequireRole(Role.Owner)
     @Delete(":id/executer")
     async deleteExecuter() {
 

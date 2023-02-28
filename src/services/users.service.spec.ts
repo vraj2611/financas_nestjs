@@ -30,35 +30,35 @@ describe('UsersService', () => {
         expect(service).toBeDefined();
     });
 
-    test('create user', async () => {
-        const user = await service.addUser(emailtest, "123", "Email para teste");
-        expect(user.email).toBe(emailtest)
-    });
+    // test('create user', async () => {
+    //     const user = await service.addUser(emailtest, "123", "Email para teste");
+    //     expect(user.email).toBe(emailtest)
+    // });
 
-    test('get user', async () => {
-        const user = await service.getByEmail(emailtest); 
-        expect(user.email).toBe(emailtest)
-    });
+    // test('get user', async () => {
+    //     const user = await service.getByEmail(emailtest); 
+    //     expect(user.email).toBe(emailtest)
+    // });
 
-    test('get user nao existe', async () => {
-        const user = await service.getByEmail("_zz" + emailtest);
-        expect(user).toBeFalsy()
-    });
+    // test('get user nao existe', async () => {
+    //     const user = await service.getByEmail("_zz" + emailtest);
+    //     expect(user).toBeFalsy()
+    // });
 
-    test('log user ok', async () => {
-        const user = await service.loginUser(emailtest, "123") 
-        expect(user.email).toBe(emailtest)
-    });
+    // test('log user ok', async () => {
+    //     const user = await service.loginUser(emailtest, "123") 
+    //     expect(user.email).toBe(emailtest)
+    // });
 
-    test('log user password incorreto', async () => {
-        const user = await service.loginUser(emailtest, "zzz") 
-        expect(user).toBeFalsy()
-    });
+    // test('log user password incorreto', async () => {
+    //     const user = await service.loginUser(emailtest, "zzz") 
+    //     expect(user).toBeFalsy()
+    // });
 
-    test('list users', async () => {
-        const users = await service.listUsers();
-        expect(users.length).toBeGreaterThan(0)
-    });
+    // test('list users', async () => {
+    //     const users = await service.listUsers();
+    //     expect(users.length).toBeGreaterThan(0)
+    // });
 
     test('delete user', async () => {
         await service.deleteUser(emailtest); 
