@@ -4,6 +4,7 @@ import { Throttle } from '@nestjs/throttler';
 import { Public } from 'src/security/public.decorator';
 import { LocalGuard } from 'src/security/local.guard';
 import { DoNotRequireRole } from 'src/security/permission.decorator';
+import { LoginUserDto } from 'src/dtos/loginUserDto.class';
 
 @Controller()
 export class AppController {
@@ -20,7 +21,7 @@ export class AppController {
     @Public()
     @UseGuards(LocalGuard)
     @Post('login')
-    async login(@Req() req, @Body() dto) {
+    async login(@Req() req, @Body() LoginUserDto) {
         return this.serv.createJwt({ id: req.user.id })
     }
 

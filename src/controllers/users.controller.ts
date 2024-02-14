@@ -24,6 +24,7 @@ export class UsersController {
     @DoNotRequireRole()
     @Get("/myprofile")
     async myprofile(@Req() req) {
+        console.log({req})
         const user = await this.serv.get(req.user.id);
         return this.secServ.decrypt_object(user, ['creditcard']);
     }

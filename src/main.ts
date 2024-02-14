@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { setEnvVariables } from './gcp.envs';
 
 export async function createSwagger(app){
@@ -21,7 +21,12 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     createSwagger(app);
     app.useGlobalPipes(new ValidationPipe());
-    app.use(helmet())
+    app.setGlobalPrefix('api');
+    app.enableVersioning({
+        defaultVersion: '1',
+        type: VersioningType.URI
+    });
+    app.use(helmet());
     app.enableCors();
     await app.listen(9876, async () => {
         console.log(`App listen on: ${(await app.getUrl())}`);

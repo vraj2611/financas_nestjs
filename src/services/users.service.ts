@@ -46,7 +46,6 @@ export class UsersService {
 
     async deleteUser(id: string) {
         const user:User = await this.get(id);
-        user.anonymize();
         return this.repo.update(user);
     }
 
